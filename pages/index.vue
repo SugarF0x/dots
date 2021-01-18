@@ -1,7 +1,9 @@
 <template lang="pug">
-  v-card
-    v-card-title This is the home page
-    v-card-text There is nothing here just yet
+  div
+    v-card
+      v-card-title This is the home page
+      v-card-text There is nothing here just yet
+    HeroIcon(hero="yrel")
 </template>
 
 <script lang="ts">
