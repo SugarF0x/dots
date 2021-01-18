@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-app
+  v-app(:style="{ background: `url(${require('~/assets/img/background.jpg').src}) no-repeat center`, backgroundSize: 'cover' }")
     v-main
       nuxt
 </template>
