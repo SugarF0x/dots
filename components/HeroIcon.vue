@@ -43,5 +43,6 @@ export default Vue.extend({
   height: 100%
   border-radius: 50%
   position: absolute
+  top: 0
   border: 2px solid rgba(51,153,255,.4)
 </style>

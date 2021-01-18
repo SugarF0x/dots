@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
+// TODO: FIX BACKGROUND IT FUCKING ZOOMS IN ON CONTENTFUL PAGE
 export default Vue.extend({
   name: 'Layout-Default'
 })
