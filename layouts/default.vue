@@ -1,17 +1,21 @@
 <template lang="pug">
-  v-app(:style="{ background: `url(${require('~/assets/img/background.jpg').src}) no-repeat center`, backgroundSize: 'cover' }")
+  v-app#app(:style="{ backgroundImage: `url(${require('~/assets/img/background.jpg').src})`}")
     v-main
       nuxt
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-// TODO: FIX BACKGROUND IT FUCKING ZOOMS IN ON CONTENTFUL PAGE
+
 export default Vue.extend({
   name: 'Layout-Default'
 })
 </script>
 
 <style lang="sass" scoped>
-
+#app
+  background-repeat: no-repeat
+  background-position: center
+  background-attachment: fixed
+  background-size: cover
 </style>
