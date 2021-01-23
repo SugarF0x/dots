@@ -1,11 +1,6 @@
 <template lang="pug">
-  div
-    HeroIcon.ma-5.d-inline-block(
-      style="min-width: 125px"
-      v-for="hero in HERO_NAMES"
-      :key="hero"
-      :hero="hero"
-    )
+  v-container
+    v-text-field
 </template>
 
 <script lang="ts">
