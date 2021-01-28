@@ -16,17 +16,19 @@ export default Vue.extend({
   props: {
     hero: {
       type: String,
-      required: true
+      default: 'random'
     }
   },
   computed: {
     heroName(): typeof HERO_NAMES[number] {
+      if (this.hero == null) return 'random'
+
       let hero = this.hero.toLowerCase() as typeof HERO_NAMES[number]
       if (HERO_NAMES.includes(hero)) {
         return hero
       } else {
-        console.error(new Error(`No hero ${hero} found - replacing with Abathur`))
-        return 'abathur'
+        console.error(new Error(`No hero ${hero} found - replacing with Random`))
+        return 'random'
       }
     }
   }
