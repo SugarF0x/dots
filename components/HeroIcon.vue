@@ -15,16 +15,17 @@ export default Vue.extend({
   name: "HeroIcon",
   props: {
     hero: {
-      type: String as () => typeof HERO_NAMES[number],
+      type: String,
       required: true
     }
   },
   computed: {
     heroName(): typeof HERO_NAMES[number] {
-      if (HERO_NAMES.includes(this.hero)) {
-        return this.hero
+      let hero = this.hero.toLowerCase() as typeof HERO_NAMES[number]
+      if (HERO_NAMES.includes(hero)) {
+        return hero
       } else {
-        console.error(new Error(`No hero ${this.hero} found - replacing with Abathur`))
+        console.error(new Error(`No hero ${hero} found - replacing with Abathur`))
         return 'abathur'
       }
     }
