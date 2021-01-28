@@ -6,9 +6,15 @@
       v-on:change="handleInput"
     )
     Entry(
+      v-if="queried.length"
+      isNew
+      :name="queried"
+    )
+    Entry(
       v-for="entry in entries"
       :key="entry.name + entry.comment.length"
       :data="entry"
+      :name="entry.name"
     )
 </template>
 
