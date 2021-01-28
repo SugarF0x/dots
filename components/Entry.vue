@@ -4,16 +4,10 @@
     elevation="12"
   )
     v-row(no-gutters)
-      v-col(
-        cols="12"
-        md="3"
-      )
+      v-col.left.flex-grow-0.mr-5
         HeroIcon(:hero="data.hero")
         Rating(:rating="data.rating")
-      v-col(
-        cols="12"
-        md="9"
-      )
+      v-col
         div.headline {{ data.name }}
         div {{ data.comment }}
 </template>
@@ -34,5 +28,6 @@ export default Vue.extend({
 </script>
 
 <style lang="sass" scoped>
-
+.left
+  min-width: 125px
 </style>
