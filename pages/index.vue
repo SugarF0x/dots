@@ -5,25 +5,23 @@
       :loading="isLoading"
       v-on:change="handleInput"
     )
+    Entry(
+      v-for="entry in entries"
+      :key="entry.name + entry.comment.length"
+      :data="entry"
+    )
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { HERO_NAMES } from "~/assets/consts"
-
-interface Entry {
-  date: Date
-  name: string
-  hero: typeof HERO_NAMES[number]
-  rating: number
-  comment: string
-}
+import { HERO_NAMES, Entry } from "~/assets/consts"
 
 export default Vue.extend({
   name: 'home',
   data() {
     return {
       HERO_NAMES,
+      queried: '',
       input: '',
       isLoading: false,
       entries: [] as Entry[]
@@ -31,7 +29,10 @@ export default Vue.extend({
   },
   methods: {
     handleInput() {
-      if (this.input.length >= 1) this.search()
+      if (this.queried !== this.input) {
+        this.queried = this.input
+        if (this.input.length >= 1) this.search()
+      }
     },
     search() {
       this.isLoading = true
@@ -42,7 +43,7 @@ export default Vue.extend({
       setTimeout(() => {
         this.isLoading = false
         this.entries = response
-      }, 2500)
+      }, 500)
     }
   }
 })

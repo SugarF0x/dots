@@ -1,4 +1,5 @@
 export const HERO_NAMES = [
+  'random',
   'abathur','alarak','alexstraza','ana','anduin','anubarak','artanis','arthas','auriel','azmodan',
   'blaze','brightwing','butcher','cassia','chen','cho','chromie','deathwing','deckard','dehaka',
   'diablo','diva','etc','falstad','fenix','gall','garrosh','gazlowe','genji','greymane',
@@ -9,3 +10,11 @@ export const HERO_NAMES = [
   'stukov','sylvanas','tassadar','thrall','tracer','tychus','tyrael','tyrande','uther','valeera',
   'valla','varian','vikings','whitemane','xul','yrel','zagara','zarya','zerathul','zuljin'
 ] as const
+
+export interface Entry {
+  date: Date
+  name: string
+  hero: typeof HERO_NAMES[number]
+  rating: number
+  comment: string
+}
