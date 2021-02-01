@@ -7,6 +7,7 @@
     )
     Entry(
       v-if="queried.length"
+      :key="queried"
       isNew
       :name="queried"
     )
