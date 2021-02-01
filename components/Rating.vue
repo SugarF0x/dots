@@ -1,9 +1,21 @@
 <template lang="pug">
   div.pt-3
-    v-icon(
-      v-for="n in 5"
-      :key="'rate-'+n"
-    ) {{ getStar(n) }}
+    div(v-if="readonly")
+      v-icon(
+        v-for="n in 5"
+        :key="'rate-'+n"
+      ) {{ getStar(n) }}
+    div(v-else)
+      v-btn(
+        v-for="n in 5"
+        :key="'rate-'+n"
+        icon
+        small
+        max-width="25"
+        @click="selectRating(n)"
+        :disabled="readonly"
+      )
+        v-icon {{ getStar(n) }}
 </template>
 
 <script lang="ts">
@@ -14,23 +26,35 @@ export default Vue.extend({
   props: {
     rating: {
       type: Number,
-      required: true
+      default: 0
+    },
+    readonly: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      selected: this.rating
     }
   },
   methods: {
     getStar(n: number) {
-      if (this.rating >= n) {
+      if (this.selected >= n) {
         return 'mdi-star'
-      } else if (this.rating - n > 0) {
+      } else if (this.selected - n > 0) {
         return 'mdi-star-half-full'
       } else {
         return 'mdi-star-outline'
+      }
+    },
+    selectRating(n: number) {
+      if (this.selected === n) {
+        this.selected = 0
+      } else {
+        this.selected = n
       }
     }
   }
 })
 </script>
-
-<style lang="sass" scoped>
-
-</style>
