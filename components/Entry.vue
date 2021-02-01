@@ -1,15 +1,14 @@
 <template lang="pug">
-  v-card.pa-5.mb-5(
-    color="#121c4c"
+  v-card.pa-5.mb-5.entry(
     elevation="12"
   )
     v-row(no-gutters)
       v-col.left.flex-grow-0.mr-5
         HeroIcon(:hero="data ? data.hero : null")
         Rating(:rating="data ? data.rating : 0")
-      v-col
-        div.headline {{ data.name }}
-        div {{ data.comment }}
+      v-col.right
+        div.headline.title.mb-5 {{ data.name }}
+        div.comment {{ data.comment }}
 </template>
 
 <script lang="ts">

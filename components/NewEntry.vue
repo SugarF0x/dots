@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-card.pa-5.mb-5(
+  v-card.pa-5.mb-5.entry(
     color="#121c4c"
     elevation="12"
   )
@@ -30,9 +30,15 @@
             :disabled="!canSubmit"
             @click="submit"
           ) Отправить
-      v-col
-        v-text-field.headline(v-model="form.name")
-        v-textarea(v-model="form.comment")
+      v-col.right
+        v-text-field.headline.title.mb-5.mt-0(
+          v-model="form.name"
+          :hide-details="true"
+        )
+        v-textarea.comment(
+          v-model="form.comment"
+          :hide-details="true"
+        )
 </template>
 
 <script lang="ts">
