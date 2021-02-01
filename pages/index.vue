@@ -27,8 +27,8 @@ export default Vue.extend({
   data() {
     return {
       HERO_NAMES,
-      queried: 'pickle',
-      input: 'pickle',
+      queried: '',
+      input: '',
       isLoading: false,
       entries: [] as Entry[]
     }
