@@ -107,4 +107,5 @@ export default Vue.extend({
   -webkit-text-stroke: 1px rgb(51,153,255)
 .add:hover
   opacity: .75
+  box-shadow: 0 0 15px 0 rgba(51, 153, 255, 0.75)
 </style>
