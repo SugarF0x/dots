@@ -5,10 +5,9 @@
       :loading="isLoading"
       v-on:change="handleInput"
     )
-    Entry(
+    NewEntry(
       v-if="queried.length"
       :key="queried"
-      isNew
       :name="queried"
     )
     Entry(
@@ -28,8 +27,8 @@ export default Vue.extend({
   data() {
     return {
       HERO_NAMES,
-      queried: '',
-      input: '',
+      queried: 'pickle',
+      input: 'pickle',
       isLoading: false,
       entries: [] as Entry[]
     }

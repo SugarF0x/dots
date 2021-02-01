@@ -1,10 +1,12 @@
 <template lang="pug">
-  v-img.icon(
-    :src='require(`~/assets/img/heroes/${heroName}.png`)'
-    aspect-ratio='1'
-    max-width="125"
-    max-height="125"
-  )
+  div(style="position: relative")
+    v-img.icon(
+      :src='require(`~/assets/img/heroes/${heroName}.png`)'
+      aspect-ratio='1'
+      max-width="125"
+      max-height="125"
+    )
+    slot
 </template>
 
 <script lang="ts">

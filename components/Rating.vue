@@ -54,6 +54,7 @@ export default Vue.extend({
       } else {
         this.selected = n
       }
+      this.$emit('selected', this.selected)
     }
   }
 })

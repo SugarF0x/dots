@@ -5,24 +5,18 @@
   )
     v-row(no-gutters)
       v-col.left.flex-grow-0.mr-5
-        HeroIcon(
-          :hero="data ? data.hero : null"
-          :readonly="!isNew"
-        )
-        Rating(
-          :rating="data ? data.rating : 0"
-          :readonly="!isNew"
-        )
-        v-btn.mt-3(
-          v-if="isNew"
-          color="primary"
-        ) Отправить
-      v-col(v-if="!isNew")
+        HeroIcon(:hero="data ? data.hero : null")
+        Rating(:rating="data ? data.rating : 0")
+        //v-btn.mt-3(
+        //  v-if="isNew"
+        //  color="primary"
+        //) Отправить
+      v-col
         div.headline {{ data.name }}
         div {{ data.comment }}
-      v-col(v-else)
-        v-text-field.headline(v-model="newData.name")
-        v-textarea
+      //v-col(v-else)
+      //  v-text-field.headline(v-model="newData.name")
+      //  v-textarea
 </template>
 
 <script lang="ts">
@@ -34,25 +28,6 @@ export default Vue.extend({
   props: {
     data: {
       type: Object as () => Entry
-    },
-    isNew: {
-      type: Boolean,
-      default: false
-    },
-    name: {
-      type: String,
-      default: ''
-    }
-  },
-  data() {
-    return {
-      newData: {
-        date: new Date(),
-        hero: '',
-        rating: 0,
-        name: this.name,
-        comment: ''
-      }
     }
   }
 })
