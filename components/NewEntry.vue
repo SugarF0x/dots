@@ -4,7 +4,7 @@
     elevation="12"
   )
     v-row(no-gutters)
-      v-col.left.flex-grow-0.mr-5.fill-height
+      v-col.left.flex-grow-0.mr-5
         HeroIcon(:hero="form.hero")
           v-btn.add.absolute(
             v-if="!drawer"
@@ -24,11 +24,12 @@
           @selected="selectRating"
         )
         v-spacer
-        v-btn.mt-3(
-          color="primary"
-          :disabled="!canSubmit"
-          @click="submit"
-        ) Отправить
+        div
+          v-btn.mt-3(
+            color="primary"
+            :disabled="!canSubmit"
+            @click="submit"
+          ) Отправить
       v-col
         v-text-field.headline(v-model="form.name")
         v-textarea(v-model="form.comment")
@@ -98,6 +99,12 @@ export default Vue.extend({
   top: 0
 .left
   min-width: 125px
+  display: flex
+  flex-flow: column
+  > *
+    flex-grow: 0
+  > :last-of-type
+    flex-grow: 1
 .add
   width: 100%
   height: 100%
