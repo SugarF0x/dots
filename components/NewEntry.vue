@@ -62,17 +62,18 @@ export default Vue.extend({
     }
   },
   computed: {
-    canSubmit() { return this.form.comment.length > 0 && this.name.length > 0 }
+    canSubmit(): boolean { return this.form.comment.length > 0 && this.form.name.length > 0 }
   },
   methods: {
     openDrawer() {
       this.drawer = true
       this.$nextTick(() => {
+        // @ts-ignore, comment: this is a ref, so it is there
         this.$refs.heroSelectField.onClick(this.$refs.heroSelectField)
       })
     },
-    selectHero(hero: string) {
-      if (HERO_NAMES.includes(hero.toLowerCase())) {
+    selectHero(hero: typeof HERO_NAMES[number]) {
+      if (HERO_NAMES.includes(hero)) {
         this.drawer = false
         this.form.hero = hero
       } else if (hero.length === 0) {
