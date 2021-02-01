@@ -39,6 +39,7 @@ export default Vue.extend({
       if (this.queried !== this.input) {
         this.queried = this.input
         if (this.input.length >= 1) this.search()
+        if (this.input.length === 0) this.entries = []
       }
     },
     search() {
