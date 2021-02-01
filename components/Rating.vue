@@ -30,7 +30,7 @@ export default Vue.extend({
     },
     readonly: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   data() {
