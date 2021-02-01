@@ -45,7 +45,7 @@ export default Vue.extend({
       this.isLoading = true
 
       let dummyData = require('~/assets/dummy.json') as Entry[]
-      let response = dummyData.filter(entry => entry.name.includes(this.input))
+      let response = dummyData.filter(entry => entry.name.toLowerCase().includes(this.input.toLowerCase()))
 
       setTimeout(() => {
         this.isLoading = false
