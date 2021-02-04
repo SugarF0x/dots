@@ -10,7 +10,7 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   ssr: false,
-  target: 'static',
+  target: 'server',
   head: {
     titleTemplate: 'DotS',
     title: 'DotS',
