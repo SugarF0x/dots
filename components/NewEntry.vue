@@ -20,6 +20,7 @@
                 @blur="cancelSelect"
               )
         Rating(
+          :rating="form.rating"
           :readonly="false"
           @selected="selectRating"
         )
@@ -39,6 +40,14 @@
           v-model="form.comment"
           :hide-details="true"
         )
+    v-overlay(
+      v-if="isLoading"
+      absolute
+    )
+      v-progress-circular(
+        indeterminate
+        size="100"
+      )
 </template>
 
 <script lang="ts">
@@ -59,6 +68,7 @@ export default Vue.extend({
     return {
       HERO_NAMES,
       drawer: false,
+      isLoading: false,
       form: {
         rating: 0,
         comment: '',
@@ -93,7 +103,16 @@ export default Vue.extend({
       this.form.rating = n
     },
     submit() {
-      console.log(JSON.parse(JSON.stringify(this.form)))
+      // console.log(JSON.parse(JSON.stringify(this.form)))
+      this.isLoading = true
+
+      setTimeout(() => {
+        this.isLoading = false
+        this.form.rating = 0
+        this.form.comment = ''
+        this.form.name = this.name
+        this.form.hero = 'random'
+      }, 1000)
     }
   }
 })
