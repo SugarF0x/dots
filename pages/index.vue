@@ -9,6 +9,7 @@
       v-if="$auth.loggedIn && queried.length"
       :key="queried"
       :name="queried"
+      @created="search"
     )
     Entry(
       v-for="entry in entries"

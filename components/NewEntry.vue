@@ -102,17 +102,25 @@ export default Vue.extend({
     selectRating(n: number) {
       this.form.rating = n
     },
-    submit() {
-      // console.log(JSON.parse(JSON.stringify(this.form)))
-      this.isLoading = true
-
-      setTimeout(() => {
+    async submit() {
+      const resetEntry = () => {
         this.isLoading = false
         this.form.rating = 0
         this.form.comment = ''
         this.form.name = this.name
         this.form.hero = 'random'
-      }, 1000)
+      }
+
+      this.isLoading = true
+
+      let response = await this.$axios.post('/db/addEntry', this.form)
+        .then((response) => {
+          this.$emit('created')
+          resetEntry()
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     }
   }
 })

@@ -38,6 +38,11 @@ export default Vue.extend({
       selected: this.rating
     }
   },
+  watch: {
+    rating(val) {
+      this.selected = val
+    }
+  },
   methods: {
     getStar(n: number) {
       if (this.selected >= n) {
