@@ -42,16 +42,13 @@ export default Vue.extend({
         this.$router.replace({ query: { search: this.queried } })
       }
     },
-    search() {
+    async search() {
       this.isLoading = true
 
-      let dummyData = require('~/assets/dummy.json') as Entry[]
-      let response = dummyData.filter(entry => entry.name.toLowerCase().includes(this.input.toLowerCase()))
+      const response = await this.$axios.$get('/db/search', { params: { name: this.queried } })
 
-      setTimeout(() => {
-        this.isLoading = false
-        this.entries = response
-      }, 500)
+      this.isLoading = false
+      this.entries = response
     }
   },
   mounted() {

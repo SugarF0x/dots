@@ -29,7 +29,8 @@
       "@types/jsonwebtoken",
       "@nuxt/types",
       "@nuxtjs/axios",
-      "@types/nuxtjs__auth"
+      "@types/nuxtjs__auth",
+      "mongoose"
     ]
   },
   "exclude": [
