@@ -5,6 +5,7 @@
         src="~/assets/img/logo.png"
         aspect-ratio="2.286"
         max-width="560"
+        @click="$router.push('/')"
       )
       nuxt
 </template>
