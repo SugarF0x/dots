@@ -25,9 +25,42 @@ export default {
   ],
   modules: [
     '@nuxtjs/axios',
+    '@nuxtjs/auth'
   ],
   axios: {
-    // this will be set up later
+    baseURL: process.env.NODE_ENV === 'development' || !process.env.BASE_URL
+      ? `http://localhost:3000/api`
+      : process.env.BASE_URL
+  },
+  auth: {
+    cookie: {
+      options: {
+        expires: 365
+      }
+    },
+    resetOnError: true,
+    redirect: {
+      login: '/login',
+      logout: false
+    },
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: '/auth/login',
+            method: 'post',
+            propertyName: 'token'
+          },
+          logout: false,
+          user: {
+            url: '/auth/me',
+            method: 'GET',
+            propertyName: 'token'
+          }
+        },
+        tokenRequired: true
+      },
+    },
   },
   vuetify: {
     treeShake: {
@@ -54,5 +87,8 @@ export default {
   },
   build: {
 
+  },
+  serverMiddleware: {
+    '/api': '~/api'
   }
 }

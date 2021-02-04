@@ -25,7 +25,11 @@
     },
     "types": [
       "@types/node",
-      "@nuxt/types"
+      "@types/cookie-parser",
+      "@types/jsonwebtoken",
+      "@nuxt/types",
+      "@nuxtjs/axios",
+      "@types/nuxtjs__auth"
     ]
   },
   "exclude": [
