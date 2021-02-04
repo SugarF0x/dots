@@ -1,5 +1,13 @@
 import colors from 'vuetify/es5/util/colors'
 
+/**
+ * .env definitions in use
+ *
+ * BASE_URL - define base path to prepend to Axios calls [default: http://localhost:3000/api]
+ * PASSWORD - pass to get editor access [default: 1234]
+ * SECRET - JWT secret [default: 4321]
+ */
+
 export default {
   ssr: false,
   target: 'static',
