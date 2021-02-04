@@ -27,8 +27,8 @@ export default Vue.extend({
   data() {
     return {
       HERO_NAMES,
-      queried: '',
-      input: '',
+      queried: this.$route.query.search as string || '',
+      input: this.$route.query.search as string || '',
       isLoading: false,
       entries: [] as Entry[]
     }
@@ -39,6 +39,7 @@ export default Vue.extend({
         this.queried = this.input
         if (this.input.length >= 1) this.search()
         if (this.input.length === 0) this.entries = []
+        this.$router.replace({ query: { search: this.queried } })
       }
     },
     search() {
@@ -52,6 +53,9 @@ export default Vue.extend({
         this.entries = response
       }, 500)
     }
+  },
+  mounted() {
+    if (this.queried.length) this.search()
   }
 })
 </script>
