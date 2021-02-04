@@ -6,7 +6,7 @@
       v-on:change="handleInput"
     )
     NewEntry(
-      v-if="queried.length"
+      v-if="$auth.loggedIn && queried.length"
       :key="queried"
       :name="queried"
     )
