@@ -13,8 +13,8 @@ declare global {
   }
 }
 
-module.exports = () => {
-  router.use(async (req,res,next) => {
+module.exports = (app: express.Express) => {
+  app.use(async (req,res,next) => {
     req["access"] = false
     let token = ''
     if (req.cookies["auth._token.local"] && req.cookies["auth._token.local"].split(' ')[0] === 'Bearer') {
