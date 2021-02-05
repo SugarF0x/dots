@@ -17,6 +17,14 @@
       :data="entry"
       :name="entry.name"
     )
+    div(v-if="!entries.length && !queried.length")
+      div.headline.text-center.mb-5 Последние пять дебилов
+      Entry(
+        v-for="entry in lastFive"
+        :key="'last' + entry.name + entry.comment.length"
+        :data="entry"
+        :name="entry.name"
+      )
 </template>
 
 <script lang="ts">
@@ -31,7 +39,8 @@ export default Vue.extend({
       queried: this.$route.query.search as string || '',
       input: this.$route.query.search as string || '',
       isLoading: false,
-      entries: [] as Entry[]
+      entries: [] as Entry[],
+      lastFive: [] as Entry[]
     }
   },
   methods: {
@@ -50,10 +59,19 @@ export default Vue.extend({
 
       this.isLoading = false
       this.entries = response
+    },
+    async getLastFive() {
+      this.isLoading = true
+
+      const response = await this.$axios.$get('/db/getLastFive')
+
+      this.isLoading = false
+      this.lastFive = response
     }
   },
   mounted() {
     if (this.queried.length) this.search()
+    this.getLastFive()
   }
 })
 </script>

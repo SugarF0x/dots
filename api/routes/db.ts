@@ -21,13 +21,20 @@ module.exports = () => {
 
   router.get('/search', async (req, res) => {
     let name = req.query.name
-
     Dots.find({
       name: {
         $regex: name,
         $options: "i"
       }
     }, (err: Error | undefined, entries: IDots[] | undefined) => {
+      if (!err && entries) {
+        res.json(entries)
+      }
+    })
+  })
+
+  router.get('/getLastFive', async (req, res) => {
+    Dots.find({}, null, { sort: { date: -1 }, limit: 5 }, (err: Error | undefined, entries: IDots[] | undefined) => {
       if (!err && entries) {
         res.json(entries)
       }
