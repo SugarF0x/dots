@@ -4,6 +4,7 @@
       v-model="input"
       :loading="isLoading"
       v-on:change="handleInput"
+      placeholder="Введите имя дебила"
     )
     NewEntry(
       v-if="$auth.loggedIn && queried.length"
