@@ -56,18 +56,22 @@ export default Vue.extend({
     async search() {
       this.isLoading = true
 
-      const response = await this.$axios.$get('/db/search', { params: { name: this.queried } })
+      const response = await this.$axios.$get('/db/search', { params: { name: this.queried } }) as Entry[]
 
       this.isLoading = false
-      this.entries = response
+      this.entries = response.sort((a,b) => {
+        return a.date.valueOf() - b.date.valueOf()
+      })
     },
     async getLastFive() {
       this.isLoading = true
 
-      const response = await this.$axios.$get('/db/getLastFive')
+      const response = await this.$axios.$get('/db/getLastFive') as Entry[]
 
       this.isLoading = false
-      this.lastFive = response
+      this.lastFive = response.sort((a,b) => {
+        return a.date.valueOf() - b.date.valueOf()
+      })
     }
   },
   mounted() {
