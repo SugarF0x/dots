@@ -24,4 +24,4 @@ const routeDB = require('./routes/db')
 app.use('/auth', routeAuth(app))
 app.use('/db', routeDB(app))
 
-module.exports = app
+module.exports = { path: '/api', handler: app }

@@ -33,7 +33,8 @@ export default {
   ],
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/auth'
+    '@nuxtjs/auth',
+    '~/modules/api'
   ],
   axios: {
     baseURL: process.env.NODE_ENV === 'development' || !process.env.BASE_URL
@@ -93,10 +94,5 @@ export default {
       }
     }
   },
-  build: {
-
-  },
-  serverMiddleware: {
-    '/api': '~/api'
-  }
+  build: {}
 }
