@@ -10,7 +10,7 @@
       v-if="$auth.loggedIn && queried.length"
       :key="queried"
       :name="queried"
-      @created="search"
+      @created="handleNewEntry"
     )
     Entry(
       v-for="entry in entries"
@@ -52,6 +52,12 @@ export default Vue.extend({
         if (this.input.length === 0) this.entries = []
         this.$router.replace({ query: { search: this.queried } })
       }
+    },
+    handleNewEntry(entry: Entry) {
+      this.entries.pop()
+      this.lastFive.pop()
+      this.entries.unshift(entry)
+      this.lastFive.unshift(entry)
     },
     async search() {
       this.isLoading = true

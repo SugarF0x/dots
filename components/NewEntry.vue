@@ -115,7 +115,7 @@ export default Vue.extend({
 
       let response = await this.$axios.post('/db/addEntry', this.form)
         .then((response) => {
-          this.$emit('created')
+          this.$emit('created', Object.assign({}, this.form, { date: new Date() }))
           resetEntry()
         })
         .catch((error) => {
