@@ -8,7 +8,7 @@ module.exports = () => {
     if (req.access) {
       new Dots({...req.body}).save()
         .then(() => {
-          consola.success(`A bew entry has been created: ${req.body.name} (${req.body.hero}) [${req.body.rating}]`)
+          consola.success(`A new entry has been created: ${req.body.name} (${req.body.hero}) [${req.body.rating}]`)
           res.status(201).json({ result: 1, message: "New entry created" })
       })
         .catch((err: Error | undefined) => {

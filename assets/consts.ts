@@ -6,9 +6,9 @@ export const HERO_NAMES = [
   'guldan','hammer','hanzo','hogger','illidan','imperius','jaina','johanna','junkrat','kaelthas',
   'keltuzad','kerrigan','kharazim','leoric','lili','liming','lucio','lunara','maiev','malfurion',
   'malganis','malthael','medivh','mei','mephisto','morales','muradin','murky','nazeebo','nova',
-  'orphea','probius','qhira','ragnaros','raynor','regar','rexxar','samuro','sonya','stitches',
+  'orphea','probius','qhira','ragnaros','raynor','rehgar','rexxar','samuro','sonya','stitches',
   'stukov','sylvanas','tassadar','thrall','tracer','tychus','tyrael','tyrande','uther','valeera',
-  'valla','varian','vikings','whitemane','xul','yrel','zagara','zarya','zerathul','zuljin'
+  'valla','varian','vikings','whitemane','xul','yrel','zagara','zarya','zeratul','zuljin'
 ] as const
 
 export interface Entry {
