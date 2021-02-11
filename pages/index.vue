@@ -14,7 +14,7 @@
     )
     Entry(
       v-for="entry in entries"
-      :key="entry.name + entry.comment.length"
+      :key="entry.name + entry.date + entry.comment.length"
       :data="entry"
       :name="entry.name"
     )
@@ -54,7 +54,7 @@ export default Vue.extend({
       }
     },
     handleNewEntry(entry: Entry) {
-      this.entries.push(entry)
+      this.entries.unshift(entry)
       this.lastFive.pop()
       this.lastFive.unshift(entry)
     },
@@ -65,7 +65,7 @@ export default Vue.extend({
 
       this.isLoading = false
       this.entries = response.sort((a,b) => {
-        return a.date.valueOf() - b.date.valueOf()
+        return new Date(b.date).valueOf() - new Date(a.date).valueOf()
       })
     },
     async getLastFive() {
@@ -75,7 +75,7 @@ export default Vue.extend({
 
       this.isLoading = false
       this.lastFive = response.sort((a,b) => {
-        return a.date.valueOf() - b.date.valueOf()
+        return new Date(b.date).valueOf() - new Date(a.date).valueOf()
       })
     }
   },
