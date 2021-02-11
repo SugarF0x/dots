@@ -6,7 +6,7 @@ const router  = express.Router()
 module.exports = () => {
   router.post("/addEntry", async (req, res) => {
     if (req.access) {
-      new Dots({...req.body}).save()
+      new Dots({ ...req.body, date: new Date() }).save()
         .then(() => {
           consola.success(`A new entry has been created: ${req.body.name} (${req.body.hero}) [${req.body.rating}]`)
           res.status(201).json({ result: 1, message: "New entry created" })

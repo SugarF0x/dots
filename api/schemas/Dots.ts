@@ -12,7 +12,7 @@ const mongoose = require("mongoose")
 const dotsSchema = new mongoose.Schema({
   date: {
     type: Date,
-    default: Date.now(),
+    required: true,
     immutable: true
   },
   name: {
