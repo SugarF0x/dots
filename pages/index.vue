@@ -54,9 +54,8 @@ export default Vue.extend({
       }
     },
     handleNewEntry(entry: Entry) {
-      this.entries.pop()
+      this.entries.push(entry)
       this.lastFive.pop()
-      this.entries.unshift(entry)
       this.lastFive.unshift(entry)
     },
     async search() {
