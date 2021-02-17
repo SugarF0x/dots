@@ -1,6 +1,6 @@
 <template lang="pug">
   div.pt-3
-    div(v-if="readonly")
+    div(v-if="readonly").text-center
       v-icon(
         v-for="n in 5"
         :key="'rate-'+n"

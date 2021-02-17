@@ -28,6 +28,7 @@
       "@types/cookie-parser",
       "@types/jsonwebtoken",
       "@nuxt/types",
+      "@nuxtjs/vuetify",
       "@nuxtjs/axios",
       "@types/nuxtjs__auth",
       "mongoose"
