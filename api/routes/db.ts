@@ -41,5 +41,13 @@ module.exports = () => {
     })
   })
 
+  router.get('/getCount', async (req, res) => {
+    Dots.estimatedDocumentCount({}, (err: Error | undefined, count: number) => {
+      if (!err && count) {
+        res.status(200).json({ result: 1, message: count })
+      }
+    })
+  })
+
   return router
 }
