@@ -27,25 +27,25 @@ module.exports = () => {
         $options: "i"
       }
     }, (err: Error | undefined, entries: IDots[] | undefined) => {
-      if (!err && entries) {
-        res.json(entries)
-      }
+      if (err) res.status(500).json({ result: 0, message: err })
+      else if (!entries) res.status(404).json({ result: 0, message: 'Not found' })
+      else res.status(200).json(entries)
     })
   })
 
   router.get('/getLastFive', async (req, res) => {
     Dots.find({}, null, { sort: { date: -1 }, limit: 5 }, (err: Error | undefined, entries: IDots[] | undefined) => {
-      if (!err && entries) {
-        res.json(entries)
-      }
+      if (err) res.status(500).json({ result: 0, message: err })
+      else if (!entries) res.status(404).json({ result: 0, message: 'Not found' })
+      else res.status(200).json(entries)
     })
   })
 
   router.get('/getCount', async (req, res) => {
     Dots.estimatedDocumentCount({}, (err: Error | undefined, count: number) => {
-      if (!err && count) {
-        res.status(200).json({ result: 1, message: count })
-      }
+      if (err) res.status(500).json({ result: 0, message: err })
+      else if (!count) res.status(404).json({ result: 0, message: 'Not found' })
+      else res.status(200).json({ result: 1, message: count })
     })
   })
 
