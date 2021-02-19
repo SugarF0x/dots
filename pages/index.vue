@@ -71,12 +71,14 @@ export default Vue.extend({
     async getLastFive() {
       this.isLoading = true
 
-      const response = await this.$axios.$get('/db/getLastFive') as Entry[]
+      const response = await this.$axios.$get('/db/getLastFive') as { result: number, message: Entry[] }
 
       this.isLoading = false
-      this.lastFive = response.sort((a,b) => {
-        return new Date(b.date).valueOf() - new Date(a.date).valueOf()
-      })
+      if (response.result) {
+        this.lastFive = response.message.sort((a, b) => {
+          return new Date(b.date).valueOf() - new Date(a.date).valueOf()
+        })
+      }
     }
   },
   mounted() {

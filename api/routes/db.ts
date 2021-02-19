@@ -19,34 +19,31 @@ module.exports = () => {
     }
   })
 
+  const resThen = (res: express.Response, message: any) => {
+    if (!message) res.status(404).json({ result: 0, message: 'Not found' })
+    else res.status(200).json({ result: 1, message })
+  }
+  const resCatch = (res: express.Response, err: Error) => {
+    res.status(500).json({ result: 0, message: err })
+  }
+
   router.get('/search', async (req, res) => {
     let name = req.query.name
-    Dots.find({
-      name: {
-        $regex: name,
-        $options: "i"
-      }
-    }, (err: Error | undefined, entries: IDots[] | undefined) => {
-      if (err) res.status(500).json({ result: 0, message: err })
-      else if (!entries) res.status(404).json({ result: 0, message: 'Not found' })
-      else res.status(200).json(entries)
-    })
+    Dots.find({ name: { $regex: name, $options: "i" } })
+      .then((entries: IDots[]) => resThen(res, entries))
+      .catch((err: Error) => resCatch(res, err))
   })
 
   router.get('/getLastFive', async (req, res) => {
-    Dots.find({}, null, { sort: { date: -1 }, limit: 5 }, (err: Error | undefined, entries: IDots[] | undefined) => {
-      if (err) res.status(500).json({ result: 0, message: err })
-      else if (!entries) res.status(404).json({ result: 0, message: 'Not found' })
-      else res.status(200).json(entries)
-    })
+    Dots.find({}, null, { sort: { date: -1 }, limit: 5 })
+      .then((entries: IDots[]) => resThen(res, entries))
+      .catch((err: Error) => resCatch(res, err))
   })
 
   router.get('/getCount', async (req, res) => {
-    Dots.estimatedDocumentCount({}, (err: Error | undefined, count: number) => {
-      if (err) res.status(500).json({ result: 0, message: err })
-      else if (!count) res.status(404).json({ result: 0, message: 'Not found' })
-      else res.status(200).json({ result: 1, message: count })
-    })
+    Dots.estimatedDocumentCount({})
+      .then((entries: number) => resThen(res, entries))
+      .catch((err: Error) => resCatch(res, err))
   })
 
   return router
