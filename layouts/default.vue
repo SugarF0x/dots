@@ -19,23 +19,11 @@ import Vue from 'vue'
 
 export default Vue.extend({
   name: 'Layout-Default',
-  data() {
-    return {
-      count: 0
-    }
+  computed: {
+    count() { return this.$store.state.entries.total }
   },
-  methods: {
-    async getCount(): Promise<number> {
-      const response = await this.$axios.$get('/db/getCount') as { result: number, message: number }
-      if (response.result) {
-        return response.message
-      } else {
-        return 0
-      }
-    }
-  },
-  async mounted() {
-    this.count = await this.getCount()
+  mounted() {
+    this.$store.dispatch('getTotalEntries')
   }
 })
 </script>

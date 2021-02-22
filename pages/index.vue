@@ -38,52 +38,30 @@ export default Vue.extend({
     return {
       HERO_NAMES,
       queried: this.$route.query.search as string || '',
-      input: this.$route.query.search as string || '',
-      isLoading: false,
-      entries: [] as Entry[],
-      lastFive: [] as Entry[]
+      input: this.$route.query.search as string || ''
     }
+  },
+  computed: {
+    entries(): Entry[] { return this.$store.state.entries.searchResults },
+    lastFive(): Entry[] { return this.$store.state.entries.lastFive },
+    isLoading(): boolean { return this.$store.state.isLoading }
   },
   methods: {
     handleInput() {
       if (this.queried !== this.input) {
         this.queried = this.input
-        if (this.input.length >= 1) this.search()
+        if (this.input.length >= 1) this.$store.dispatch('search', this.queried)
         if (this.input.length === 0) this.entries = []
         this.$router.replace({ query: { search: this.queried } })
       }
     },
     handleNewEntry(entry: Entry) {
-      this.entries.unshift(entry)
-      this.lastFive.pop()
-      this.lastFive.unshift(entry)
-    },
-    async search() {
-      this.isLoading = true
-
-      const response = await this.$axios.$get('/db/search', { params: { name: this.queried } }) as Entry[]
-
-      this.isLoading = false
-      this.entries = response.sort((a,b) => {
-        return new Date(b.date).valueOf() - new Date(a.date).valueOf()
-      })
-    },
-    async getLastFive() {
-      this.isLoading = true
-
-      const response = await this.$axios.$get('/db/getLastFive') as { result: number, message: Entry[] }
-
-      this.isLoading = false
-      if (response.result) {
-        this.lastFive = response.message.sort((a, b) => {
-          return new Date(b.date).valueOf() - new Date(a.date).valueOf()
-        })
-      }
+      this.$store.commit('ADD_NEW_ENTRY', entry)
     }
   },
   mounted() {
-    if (this.queried.length) this.search()
-    this.getLastFive()
+    if (this.queried.length) this.$store.dispatch('search', this.queried)
+    this.$store.dispatch('getLastFive')
   }
 })
 </script>
