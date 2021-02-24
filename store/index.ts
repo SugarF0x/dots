@@ -72,5 +72,15 @@ export const actions: ActionTree<RootState, RootState> = {
     }
 
     commit('FINISH_LOADING_PROCESS')
+  },
+  async getAll({ commit }) {
+    commit('START_LOADING_PROCESS')
+    const response = await this.$axios.$get('/db/getAll') as { result: number, message: Entry[] }
+
+    if (response.result) {
+      commit('SET_SEARCH_RESULTS', response.message)
+    }
+
+    commit('FINISH_LOADING_PROCESS')
   }
 }

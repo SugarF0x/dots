@@ -46,5 +46,11 @@ module.exports = () => {
       .catch((err: Error) => resCatch(res, err))
   })
 
+  router.get('/getAll', async (req, res) => {
+    Dots.find({}, null, { sort: { date: -1 } })
+      .then((entries: IDots[]) => resThen(res, entries))
+      .catch((err: Error) => resCatch(res, err))
+  })
+
   return router
 }

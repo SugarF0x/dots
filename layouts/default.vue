@@ -10,6 +10,7 @@
         v-chip#splash.headline(
           v-if="count"
           color="#121c4c"
+          @click="getAll"
         ) {{ count }}
       nuxt#nuxt
 </template>
@@ -29,6 +30,10 @@ export default Vue.extend({
         this.$store.commit('DUMP_QUERY')
         this.$store.commit('DUMP_SEARCH_RESULTS')
       }
+    },
+    getAll() {
+      const { total, searchResults } = this.$store.state.entries
+      if (!this.$store.getters.isLoading && total !== searchResults.length) this.$store.dispatch('getAll')
     }
   },
   mounted() {
