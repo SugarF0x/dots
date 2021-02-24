@@ -33,7 +33,7 @@ export const mutations: MutationTree<RootState> = {
 
   ADD_NEW_ENTRY(state, payload: Entry) {
     state.entries.searchResults.unshift(payload)
-    state.entries.lastFive.pop()
+    if (state.entries.lastFive.length >= 5) state.entries.lastFive.pop()
     state.entries.lastFive.unshift(payload)
     state.entries.total++
   },
