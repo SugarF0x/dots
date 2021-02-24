@@ -5,7 +5,7 @@
         src="~/assets/img/logo.png"
         aspect-ratio="2.286"
         max-width="560"
-        @click="$router.push('/')"
+        @click="goHome"
       )
         v-chip#splash.headline(
           v-if="count"
@@ -21,6 +21,15 @@ export default Vue.extend({
   name: 'Layout-Default',
   computed: {
     count() { return this.$store.state.entries.total }
+  },
+  methods: {
+    goHome() {
+      if (this.$route.path !== '/' || Object.keys(this.$route.query).length) {
+        this.$router.push('/')
+        this.$store.commit('DUMP_QUERY')
+        this.$store.commit('DUMP_SEARCH_RESULTS')
+      }
+    }
   },
   mounted() {
     this.$store.dispatch('getTotalEntries')
@@ -38,6 +47,7 @@ export default Vue.extend({
 
 #dots-img
   position: relative
+  cursor: pointer
 #splash
   position: absolute
   top: 3rem
