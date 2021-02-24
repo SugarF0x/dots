@@ -16,8 +16,10 @@
     "cookie-parser": "^1.4.5",
     "core-js": "^3.6.5",
     "jsonwebtoken": "^8.5.1",
+    "konva": "^7.2.4",
     "mongoose": "^5.11.15",
-    "nuxt": "^2.14.6"
+    "nuxt": "^2.14.6",
+    "vue-konva": "^2.1.7"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.6",

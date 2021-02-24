@@ -36,6 +36,9 @@ export default {
     '@nuxtjs/auth',
     '~/modules/api'
   ],
+  plugins: [
+    '@/plugins/vue-konva.ts'
+  ],
   axios: {
     baseURL: process.env.NODE_ENV === 'development' || !process.env.BASE_URL
       ? `http://localhost:3000/api`
