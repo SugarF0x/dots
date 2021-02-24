@@ -7,9 +7,9 @@
       placeholder="Введите имя дебила"
     )
     NewEntry(
-      v-if="$auth.loggedIn && queried.length"
-      :key="queried"
-      :name="queried"
+      v-if="$auth.loggedIn && query.length"
+      :key="query"
+      :name="query"
       @created="handleNewEntry"
     )
     Entry(
@@ -18,7 +18,7 @@
       :data="entry"
       :name="entry.name"
     )
-    div(v-if="!entries.length && !queried.length")
+    div(v-if="!entries.length && !query.length")
       div.headline.text-center.mb-5 Последние пять дебилов
       Entry(
         v-for="entry in lastFive"
@@ -37,22 +37,22 @@ export default Vue.extend({
   data() {
     return {
       HERO_NAMES,
-      queried: this.$route.query.search as string || '',
       input: this.$route.query.search as string || ''
     }
   },
   computed: {
     entries(): Entry[] { return this.$store.state.entries.searchResults },
     lastFive(): Entry[] { return this.$store.state.entries.lastFive },
-    isLoading(): boolean { return this.$store.state.isLoading }
+    isLoading(): boolean { return this.$store.getters.isLoading },
+    query(): string { return this.$store.state.query }
   },
   methods: {
     handleInput() {
-      if (this.queried !== this.input) {
-        this.queried = this.input
-        if (this.input.length >= 1) this.$store.dispatch('search', this.queried)
-        if (this.input.length === 0) this.entries = []
-        this.$router.replace({ query: { search: this.queried } })
+      if (this.query !== this.input) {
+        this.$store.commit('SET_QUERY', this.input)
+        if (this.input.length >= 1) this.$store.dispatch('search')
+        if (this.input.length === 0) this.$store.commit('DUMP_SEARCH_RESULTS')
+        this.$router.push({ query: { search: this.query } })
       }
     },
     handleNewEntry(entry: Entry) {
@@ -60,7 +60,10 @@ export default Vue.extend({
     }
   },
   mounted() {
-    if (this.queried.length) this.$store.dispatch('search', this.queried)
+    if (this.input.length) {
+      this.$store.commit('SET_QUERY', this.input)
+      this.$store.dispatch('search')
+    }
     this.$store.dispatch('getLastFive')
   }
 })

@@ -1,15 +1,14 @@
 import { MutationTree, GetterTree, ActionTree } from 'vuex'
 import { Entry } from '~/assets/consts'
 
-// TODO: move queried state here as well so that one could modify it by clicking Logo (logo = take home = clear query)
-
 export const state = () => ({
+  query: '',
   entries: {
     lastFive: [] as Entry[], // maximum of 5
     searchResults: [] as Entry[],
     total: 0
   },
-  isLoading: false
+  loadingProcessCount: 0
 })
 
 export type RootState = ReturnType<typeof state>
@@ -18,37 +17,36 @@ export interface CombinedStates extends RootState {
 }
 
 export const getters: GetterTree<RootState, RootState> = {
-  // getters go here
+  isLoading: state => state.loadingProcessCount > 0,
 }
 
 // noinspection JSUnusedGlobalSymbols
 export const mutations: MutationTree<RootState> = {
-  SET_TOTAL_ENTRIES(state, payload: number) {
-    state.entries.total = payload
-  },
-  SET_LAST_FIVE_ENTRIES(state, payload: Entry[]) {
-    state.entries.lastFive = payload
-  },
-  SET_SEARCH_RESULTS(state, payload: Entry[]) {
-    state.entries.searchResults = payload
-  },
-  SET_LOADING_STATE(state, payload: boolean) {
-    state.isLoading = payload
-  },
+  SET_QUERY(state, payload: string) { state.query = payload },
+  DUMP_QUERY(state) { state.query = '' },
+
+  SET_TOTAL_ENTRIES(state, payload: number) { state.entries.total = payload },
+  SET_LAST_FIVE_ENTRIES(state, payload: Entry[]) { state.entries.lastFive = payload },
+
+  SET_SEARCH_RESULTS(state, payload: Entry[]) { state.entries.searchResults = payload },
+  DUMP_SEARCH_RESULTS(state) { state.entries.searchResults = [] },
+
   ADD_NEW_ENTRY(state, payload: Entry) {
     state.entries.searchResults.unshift(payload)
     state.entries.lastFive.pop()
     state.entries.lastFive.unshift(payload)
     state.entries.total++
-  }
+  },
+
+  START_LOADING_PROCESS(state) { state.loadingProcessCount++ },
+  FINISH_LOADING_PROCESS(state) { state.loadingProcessCount-- }
 }
 
 // noinspection JSUnusedGlobalSymbols
 export const actions: ActionTree<RootState, RootState> = {
   async getLastFive({ commit }) {
-    commit('SET_LOADING_STATE', true)
+    commit('START_LOADING_PROCESS')
     const response = await this.$axios.$get('/db/getLastFive') as { result: number, message: Entry[] }
-    commit('SET_LOADING_STATE', false)
 
     if (response.result) {
       const sortedList = response.message.sort((a, b) => {
@@ -56,24 +54,29 @@ export const actions: ActionTree<RootState, RootState> = {
       })
       commit('SET_LAST_FIVE_ENTRIES', sortedList)
     }
-  },
-  async search({ commit }, payload) {
-    commit('SET_LOADING_STATE', true)
-    const response = await this.$axios.$get('/db/search', { params: { name: payload } }) as { result: number, message: Entry[] }
-    commit('SET_LOADING_STATE', false)
 
+    commit('FINISH_LOADING_PROCESS')
+  },
+  async search({ state, commit }) {
+    commit('START_LOADING_PROCESS')
+    const response = await this.$axios.$get('/db/search', { params: { name: state.query } }) as { result: number, message: Entry[] }
     if (response.result) {
       const sortedList = response.message.sort((a, b) => {
         return new Date(b.date).valueOf() - new Date(a.date).valueOf()
       })
       commit('SET_SEARCH_RESULTS', sortedList)
     }
+
+    commit('FINISH_LOADING_PROCESS')
   },
   async getTotalEntries({ commit }) {
+    commit('START_LOADING_PROCESS')
     const response = await this.$axios.$get('/db/getCount') as { result: number, message: number }
 
     if (response.result) {
       commit('SET_TOTAL_ENTRIES', response.message)
     }
+
+    commit('FINISH_LOADING_PROCESS')
   }
 }
