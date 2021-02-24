@@ -49,10 +49,7 @@ export const actions: ActionTree<RootState, RootState> = {
     const response = await this.$axios.$get('/db/getLastFive') as { result: number, message: Entry[] }
 
     if (response.result) {
-      const sortedList = response.message.sort((a, b) => {
-        return new Date(b.date).valueOf() - new Date(a.date).valueOf()
-      })
-      commit('SET_LAST_FIVE_ENTRIES', sortedList)
+      commit('SET_LAST_FIVE_ENTRIES', response.message)
     }
 
     commit('FINISH_LOADING_PROCESS')
@@ -61,10 +58,7 @@ export const actions: ActionTree<RootState, RootState> = {
     commit('START_LOADING_PROCESS')
     const response = await this.$axios.$get('/db/search', { params: { name: state.query } }) as { result: number, message: Entry[] }
     if (response.result) {
-      const sortedList = response.message.sort((a, b) => {
-        return new Date(b.date).valueOf() - new Date(a.date).valueOf()
-      })
-      commit('SET_SEARCH_RESULTS', sortedList)
+      commit('SET_SEARCH_RESULTS', response.message)
     }
 
     commit('FINISH_LOADING_PROCESS')

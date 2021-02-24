@@ -29,7 +29,7 @@ module.exports = () => {
 
   router.get('/search', async (req, res) => {
     let name = req.query.name
-    Dots.find({ name: { $regex: name, $options: "i" } })
+    Dots.find({ name: { $regex: name, $options: "i" } }, null, { sort: { date: -1 } })
       .then((entries: IDots[]) => resThen(res, entries))
       .catch((err: Error) => resCatch(res, err))
   })
