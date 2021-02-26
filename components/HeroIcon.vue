@@ -1,7 +1,7 @@
 <template lang="pug">
   div(style="position: relative")
     v-img.icon(
-      :src='require(`~/assets/img/heroes/${heroName}.png`)'
+      :src='require(`~/assets/img/heroes/${heroName}.png?preload`)'
       aspect-ratio='1'
       max-width="125"
       max-height="125"
