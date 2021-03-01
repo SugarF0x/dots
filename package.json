@@ -19,6 +19,7 @@
     "konva": "^7.2.4",
     "mongoose": "^5.11.15",
     "nuxt": "^2.14.6",
+    "tesseract.js": "^2.1.4",
     "vue-konva": "^2.1.7"
   },
   "devDependencies": {
