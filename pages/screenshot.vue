@@ -49,36 +49,35 @@ export default Vue.extend({
      */
     getCropConfig(img: HTMLImageElement, type: 'ally' | 'enemy', n: number) {
       const allyCoords = [
-        {x:75,y:105},
-        {x:187,y:170},
-        {x:187,y:300},
-        {x:300,y:365},
-        {x:300,y:495}
+        {x: 105, y: 155},
+        {x: 275, y: 252},
+        {x: 275, y: 448},
+        {x: 448, y: 545},
+        {x: 448, y: 740}
       ]
       const enemyCoords = [
-        {x:955,y:245},
-        {x:842,y:310},
-        {x:842,y:440},
-        {x:730,y:507},
-        {x:730,y:635}
+        {x: 1420, y: 362},
+        {x: 1255, y: 460},
+        {x: 1255, y: 655},
+        {x: 1085, y: 755},
+        {x: 1085, y: 950}
       ]
 
       return {
         x: 0,
         y: 0,
         image: img,
-        width: 160,
+        width: 140,
         height: 20,
         crop: {
           ...(type === 'ally' ? allyCoords[n] : enemyCoords[n]),
-          width: 80,
-          height: 10
+          width: 140,
+          height: 20
         }
       }
     }
   },
   async mounted() {
-    // TODO: transform source image to 1280x720 before processing
     // TODO: refactor constants to objects e.g. MAIN_STAGE & CROP_STAGE are to be stage.main & stage.crop
 
     /**
@@ -86,20 +85,18 @@ export default Vue.extend({
      */
     const MAIN_STAGE = new Konva.Stage({
       container: 'mainStage',
-      width: 1280,
-      height: 720
+      width: 1920,
+      height: 1080
     })
     const CROP_STAGE = new Konva.Stage({
       container: 'cropStage',
-      width: 320,
-      height: 40,
-      scaleX: 2,
-      scaleY: 2
+      width: 140,
+      height: 20
     })
     const FILTER_STAGE = new Konva.Stage({
       container: 'filterStage',
-      width: 320,
-      height: 40
+      width: 140,
+      height: 20
     })
 
     /**
@@ -115,7 +112,7 @@ export default Vue.extend({
     /**
      * Get source image that will be used in every new Image instance
      */
-    const SOURCE_IMAGE = await this.getImage(require('~/assets/dummyScreenshot.jpeg'))
+    const SOURCE_IMAGE = await this.getImage(require('~/assets/dummyFullHD.png'))
 
     /**
      * Define Konva Image that will be used in transformations
@@ -124,8 +121,8 @@ export default Vue.extend({
       x: 0,
       y: 0,
       image: SOURCE_IMAGE,
-      width: 1280,
-      height: 720
+      width: 1920,
+      height: 1080
     })
     MAIN_LAYER.add(IMAGE)
 
@@ -135,7 +132,7 @@ export default Vue.extend({
     IMAGE.rotation(-30)
     const ALLY_SOURCE_IMAGE = await this.getImage(MAIN_STAGE.toDataURL())
     IMAGE.rotation(30)
-    IMAGE.y(-500)
+    IMAGE.y(-750)
     const ENEMY_SOURCE_IMAGE = await this.getImage(MAIN_STAGE.toDataURL())
     IMAGE.rotation(0)
     IMAGE.y(0)
