@@ -1,24 +1,9 @@
 <template lang="pug">
   v-container
     v-row(justify="center" align="center")
-      v-stage(:config="konva" ref="stage").d-none
-        v-layer
-          v-image(:config="img")
-      v-stage(:config="snippet" ref="ally")
-        v-layer(:config="{ filters: filters }" ref="process")
-          v-image(
-            v-for="n in 10"
-            :key="'ass'+n"
-            :config="getImageConfig(n)"
-            ref="allyTextImage"
-          )
-      //v-stage(:config="snippet" ref="enemy")
-      //  v-layer(:config="{ filters: filters }" ref="enemyLayer")
-      //    v-image(
-      //      v-for="n in 5"
-      //      :key="'ass'+n"
-      //      :config="getImageConfig(n, 'enemy')"
-      //    )
+      v-col(id="mainStage")
+      v-col(id="cropStage")
+      v-col(id="filterStage")
 </template>
 
 <script lang="ts">
@@ -30,46 +15,47 @@ export default Vue.extend({
   name: "screenshot",
   data() {
     return {
-      canvas: null as null | CanvasRenderingContext2D,
-      konva: {
-        width: 1280,
-        height: 720,
-        scaleX: 1,
-        scaleY: 1,
-      },
-      snippet: {
-        width: 320,
-        height: 800,
-        scaleX: 2,
-        scaleY: 2,
-      },
-      img: {
-        x: 0,
-        y: 0,
-        image: null as any,
-        width: 1280,
-        height: 720,
-        rotation: -30,
-        crop: {
-          x: 0,
-          y: 0,
-          width: 1280,
-          height: 720
-        }
-      } as any,
-      allyImage: null as null | HTMLImageElement,
-      enemyImage: null as null | HTMLImageElement,
-      filters: [Konva.Filters.Contrast, Konva.Filters.Grayscale, Konva.Filters.Invert]
+
     }
   },
   methods: {
-    getImageConfig(n: number) {
-      const coords = [
+    /**
+     * Run image text recognition
+     */
+    async recognize(image: string) {
+      return await Tesseract.recognize(image,'eng', { logger: m => console.log(m) })
+        .then(({ data: { text } }) => {
+          return text
+        })
+    },
+    /**
+     * Promisify Image onload
+     */
+    async getImage(src: string): Promise<HTMLImageElement> {
+      return new Promise(res => {
+        const image = new Image()
+        image.src = src
+        image.onload = () => {
+          image.onload = null
+          res(image)
+        }
+      })
+    },
+    /**
+     * Get Crop Image Konva config
+     * @param img
+     * @param type
+     * @param n
+     */
+    getCropConfig(img: HTMLImageElement, type: 'ally' | 'enemy', n: number) {
+      const allyCoords = [
         {x:75,y:105},
         {x:187,y:170},
         {x:187,y:300},
         {x:300,y:365},
-        {x:300,y:495},
+        {x:300,y:495}
+      ]
+      const enemyCoords = [
         {x:955,y:245},
         {x:842,y:310},
         {x:842,y:440},
@@ -79,62 +65,131 @@ export default Vue.extend({
 
       return {
         x: 0,
-        y: (n-1)*30,
-        image: n <= 5 ? this.allyImage : this.enemyImage,
+        y: 0,
+        image: img,
         width: 160,
         height: 20,
         crop: {
-          ...(coords[n-1]),
+          ...(type === 'ally' ? allyCoords[n] : enemyCoords[n]),
           width: 80,
           height: 10
         }
       }
-    },
-    async recognize(image: string) {
-      return await Tesseract.recognize(image,'eng', { logger: m => console.log(m) })
-        .then(({ data: { text } }) => {
-          return text
-        })
     }
   },
-  async created() {
-    const source = new Image()
-    source.src = require('~/assets/dummyScreenshot.jpeg')
-    source.onload = async () => {
-      source.onload = null
-      const img = this.img
-      const stage = (this.$refs.stage as any).getNode() as Konva.Node
-      img.image = source
+  async mounted() {
+    // TODO: transform source image to 1280x720 before processing
+    // TODO: refactor constants to objects e.g. MAIN_STAGE & CROP_STAGE are to be stage.main & stage.crop
 
-      const allyImage = new Image()
-      this.$nextTick(async () => {
-        allyImage.src = stage.toDataURL()
-        allyImage.onload = async () => {
-          allyImage.onload = null
-          this.allyImage = allyImage
-        }
+    /**
+     * Define Main & Crop Konva Stages & working Layer
+     */
+    const MAIN_STAGE = new Konva.Stage({
+      container: 'mainStage',
+      width: 1280,
+      height: 720
+    })
+    const CROP_STAGE = new Konva.Stage({
+      container: 'cropStage',
+      width: 320,
+      height: 40,
+      scaleX: 2,
+      scaleY: 2
+    })
+    const FILTER_STAGE = new Konva.Stage({
+      container: 'filterStage',
+      width: 320,
+      height: 40
+    })
 
-        img.rotation = 30
-        img.y = -500
-        this.$nextTick(async () => {
-          const enemyImage = new Image()
-          enemyImage.src = stage.toDataURL()
-          enemyImage.onload = async () => {
-            enemyImage.onload = null
-            this.enemyImage = enemyImage
-            img.rotation = 0
-            img.y = 0
+    /**
+     * Define working Layers
+     */
+    const MAIN_LAYER = new Konva.Layer()
+    MAIN_STAGE.add(MAIN_LAYER)
+    const CROP_LAYER = new Konva.Layer()
+    CROP_STAGE.add(CROP_LAYER)
+    const FILTER_LAYER = new Konva.Layer()
+    FILTER_STAGE.add(FILTER_LAYER)
 
-            const layer = (this.$refs.process as any).getNode() as Konva.Node
-            layer.contrast(25)
-            layer.cache()
+    /**
+     * Get source image that will be used in every new Image instance
+     */
+    const SOURCE_IMAGE = await this.getImage(require('~/assets/dummyScreenshot.jpeg'))
 
-            // console.log(ally.toDataURL())
-            // console.log(await this.recognize(ally.toDataURL()))
-            // console.log(await this.recognize(enemy.toDataURL()))
-          }
-        })
+    /**
+     * Define Konva Image that will be used in transformations
+     */
+    const IMAGE = new Konva.Image({
+      x: 0,
+      y: 0,
+      image: SOURCE_IMAGE,
+      width: 1280,
+      height: 720
+    })
+    MAIN_LAYER.add(IMAGE)
+
+    /**
+     * Create Ally & Enemy Image source instances
+     */
+    IMAGE.rotation(-30)
+    const ALLY_SOURCE_IMAGE = await this.getImage(MAIN_STAGE.toDataURL())
+    IMAGE.rotation(30)
+    IMAGE.y(-500)
+    const ENEMY_SOURCE_IMAGE = await this.getImage(MAIN_STAGE.toDataURL())
+    IMAGE.rotation(0)
+    IMAGE.y(0)
+
+    /**
+     * Create arrays of single names for both teams
+     */
+    const ALLY_NAMES = [] as HTMLImageElement[]
+    const ENEMY_NAMES = [] as HTMLImageElement[]
+    for (let i=0; i<5; i++) {
+      const CROP_ALLY_IMAGE = new Konva.Image({
+        ...this.getCropConfig(ALLY_SOURCE_IMAGE, 'ally', i)
       })
+      const CROP_ENEMY_IMAGE = new Konva.Image({
+        ...this.getCropConfig(ENEMY_SOURCE_IMAGE, 'enemy', i)
+      })
+
+      CROP_LAYER.add(CROP_ALLY_IMAGE)
+      ALLY_NAMES.push(await this.getImage(CROP_STAGE.toDataURL()))
+      CROP_ALLY_IMAGE.destroy()
+
+      CROP_LAYER.add(CROP_ENEMY_IMAGE)
+      ENEMY_NAMES.push(await this.getImage(CROP_STAGE.toDataURL()))
+      CROP_ENEMY_IMAGE.destroy()
+    }
+
+    /**
+     * Create arrays of names with filters applied
+     */
+    const FILTERED_ALLY_NAMES = [] as HTMLImageElement[]
+    const FILTERED_ENEMY_NAMES = [] as HTMLImageElement[]
+    for (let i=0; i<5; i++) {
+      const FILTERED_ALLY_IMAGE = new Konva.Image({
+        x: 0,
+        y: 0,
+        image: ALLY_NAMES[i],
+        filters: [Konva.Filters.Contrast, Konva.Filters.Grayscale, Konva.Filters.Invert]
+      })
+      const FILTERED_ENEMY_IMAGE = new Konva.Image({
+        x: 0,
+        y: 0,
+        image: ENEMY_NAMES[i],
+        filters: [Konva.Filters.Contrast, Konva.Filters.Grayscale, Konva.Filters.Invert]
+      })
+
+      FILTERED_ALLY_IMAGE.cache()
+      FILTER_LAYER.add(FILTERED_ALLY_IMAGE)
+      FILTERED_ALLY_NAMES.push(await this.getImage(FILTER_STAGE.toDataURL()))
+      FILTERED_ALLY_IMAGE.destroy()
+
+      FILTERED_ENEMY_IMAGE.cache()
+      FILTER_LAYER.add(FILTERED_ENEMY_IMAGE)
+      FILTERED_ENEMY_NAMES.push(await this.getImage(FILTER_STAGE.toDataURL()))
+      FILTERED_ENEMY_IMAGE.destroy()
     }
   }
 })
