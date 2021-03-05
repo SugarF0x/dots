@@ -3,8 +3,8 @@
     v-row(justify="center" align="center").d-none
       v-col(id="mainStage")
       v-col(id="cropStage")
-    v-row
-      v-col {{ names }}
+    v-row(justify="center")
+      Dashboard(:uppy="uppy" :props="{ theme: 'dark' }" v-if="state === 'init'")
 </template>
 
 <script lang="ts">
@@ -12,11 +12,41 @@ import Vue from 'vue'
 import Konva from 'konva'
 import Tesseract from "tesseract.js"
 
+import Uppy from '@uppy/core'
+import { Dashboard } from '@uppy/vue'
+import '@uppy/core/dist/style.css'
+import '@uppy/dashboard/dist/style.css' // @ts-ignore
+import Russian from '@uppy/locales/lib/ru_RU'
+
 export default Vue.extend({
   name: "screenshot",
+  components: {
+    Dashboard
+  },
   data() {
     return {
+      state: 'init', // init | parsing | finished
       names: [] as string[]
+    }
+  },
+  computed: {
+    uppy() { // @ts-ignore
+      return new Uppy({
+        id: 'uppy',
+        restrictions: {
+          allowedFileTypes: ['image/*']
+        },// @ts-ignore
+        onBeforeFileAdded: (file: any) => {
+          this.state = 'parsing'
+
+          const reader = new FileReader()
+          reader.readAsDataURL(file.data)
+          reader.onload = async () => {
+            await this.parse(await this.getImage(reader.result as string))
+          }
+        },
+        locale: Russian
+      })
     }
   },
   methods: {
@@ -76,129 +106,123 @@ export default Vue.extend({
           height: 16
         }
       }
-    }
-  },
-  async mounted() {
-    /**
-     * Define Main & Crop Konva Stages & working Layer
-     */
-    const stage = {
-      main: new Konva.Stage({
-        container: 'mainStage',
+    },
+    async parse(sourceImage: HTMLImageElement) {
+      /**
+       * Define Main & Crop Konva Stages & working Layer
+       */
+      const stage = {
+        main: new Konva.Stage({
+          container: 'mainStage',
+          width: 1920,
+          height: 1080
+        }),
+        crop: new Konva.Stage({
+          container: 'cropStage',
+          width: 130,
+          height: 16
+        })
+      }
+
+      /**
+       * Define working Layers
+       */
+      const layer = {
+        main: new Konva.Layer(),
+        crop: new Konva.Layer()
+      }
+      stage.main.add(layer.main)
+      stage.crop.add(layer.crop)
+
+      /**
+       * Define Konva Image that will be used in transformations
+       */
+      const image = new Konva.Image({
+        x: 0,
+        y: 0,
+        image: sourceImage,
         width: 1920,
         height: 1080
-      }),
-      crop: new Konva.Stage({
-        container: 'cropStage',
-        width: 130,
-        height: 16
       })
-    }
+      layer.main.add(image)
 
-    /**
-     * Define working Layers
-     */
-    const layer = {
-      main: new Konva.Layer(),
-      crop: new Konva.Layer()
-    }
-    stage.main.add(layer.main)
-    stage.crop.add(layer.crop)
+      /**
+       * Create Ally & Enemy Image source instances
+       */
+      image.rotation(-30)
+      const ALLY_SOURCE_IMAGE = await this.getImage(stage.main.toDataURL())
+      image.rotation(30)
+      image.y(-750)
+      const ENEMY_SOURCE_IMAGE = await this.getImage(stage.main.toDataURL())
+      image.rotation(0)
+      image.y(0)
 
-    /**
-     * Get source image that will be used in every new Image instance
-     * TODO: replace this section with Uppy file upload
-     */
-    const SOURCE_IMAGE = await this.getImage(require('~/assets/dummyFullHD.png'))
+      /**
+       * Create arrays of single names for both teams
+       */
+      const names = {
+        ally: [] as HTMLImageElement[],
+        enemy: [] as HTMLImageElement[]
+      }
+      for (let i=0; i<5; i++) {
+        const crop = {
+          ally: new Konva.Image({
+            ...this.getCropConfig(ALLY_SOURCE_IMAGE, 'ally', i)
+          }),
+          enemy: new Konva.Image({
+            ...this.getCropConfig(ENEMY_SOURCE_IMAGE, 'enemy', i)
+          })
+        }
 
-    /**
-     * Define Konva Image that will be used in transformations
-     */
-    const image = new Konva.Image({
-      x: 0,
-      y: 0,
-      image: SOURCE_IMAGE,
-      width: 1920,
-      height: 1080
-    })
-    layer.main.add(image)
+        layer.crop.add(crop.ally)
+        names.ally.push(await this.getImage(stage.crop.toDataURL()))
+        crop.ally.destroy()
 
-    /**
-     * Create Ally & Enemy Image source instances
-     */
-    image.rotation(-30)
-    const ALLY_SOURCE_IMAGE = await this.getImage(stage.main.toDataURL())
-    image.rotation(30)
-    image.y(-750)
-    const ENEMY_SOURCE_IMAGE = await this.getImage(stage.main.toDataURL())
-    image.rotation(0)
-    image.y(0)
-
-    /**
-     * Create arrays of single names for both teams
-     */
-    const names = {
-      ally: [] as HTMLImageElement[],
-      enemy: [] as HTMLImageElement[]
-    }
-    for (let i=0; i<5; i++) {
-      const crop = {
-        ally: new Konva.Image({
-          ...this.getCropConfig(ALLY_SOURCE_IMAGE, 'ally', i)
-        }),
-        enemy: new Konva.Image({
-          ...this.getCropConfig(ENEMY_SOURCE_IMAGE, 'enemy', i)
-        })
+        layer.crop.add(crop.enemy)
+        names.enemy.push(await this.getImage(stage.crop.toDataURL()))
+        crop.enemy.destroy()
       }
 
-      layer.crop.add(crop.ally)
-      names.ally.push(await this.getImage(stage.crop.toDataURL()))
-      crop.ally.destroy()
+      /**
+       * Create arrays of names with filters applied
+       */
+      const filteredNames = {
+        ally: [] as HTMLImageElement[],
+        enemy: [] as HTMLImageElement[]
+      }
+      for (let i=0; i<5; i++) {
+        const filtered = {
+          ally: new Konva.Image({
+            x: 0,
+            y: 0,
+            image: names.ally[i],
+            filters: [Konva.Filters.Contrast, Konva.Filters.Grayscale, Konva.Filters.Invert]
+          }),
+          enemy: new Konva.Image({
+            x: 0,
+            y: 0,
+            image: names.enemy[i],
+            filters: [Konva.Filters.Contrast, Konva.Filters.Grayscale, Konva.Filters.Invert]
+          })
+        }
 
-      layer.crop.add(crop.enemy)
-      names.enemy.push(await this.getImage(stage.crop.toDataURL()))
-      crop.enemy.destroy()
-    }
+        filtered.ally.cache()
+        layer.crop.add(filtered.ally)
+        filteredNames.ally.push(await this.getImage(layer.crop.toDataURL()))
+        filtered.ally.destroy()
 
-    /**
-     * Create arrays of names with filters applied
-     */
-    const filteredNames = {
-      ally: [] as HTMLImageElement[],
-      enemy: [] as HTMLImageElement[]
-    }
-    for (let i=0; i<5; i++) {
-      const filtered = {
-        ally: new Konva.Image({
-          x: 0,
-          y: 0,
-          image: names.ally[i],
-          filters: [Konva.Filters.Contrast, Konva.Filters.Grayscale, Konva.Filters.Invert]
-        }),
-        enemy: new Konva.Image({
-          x: 0,
-          y: 0,
-          image: names.enemy[i],
-          filters: [Konva.Filters.Contrast, Konva.Filters.Grayscale, Konva.Filters.Invert]
-        })
+        filtered.enemy.cache()
+        layer.crop.add(filtered.enemy)
+        filteredNames.enemy.push(await this.getImage(layer.crop.toDataURL()))
+        filtered.enemy.destroy()
       }
 
-      filtered.ally.cache()
-      layer.crop.add(filtered.ally)
-      filteredNames.ally.push(await this.getImage(layer.crop.toDataURL()))
-      filtered.ally.destroy()
-
-      filtered.enemy.cache()
-      layer.crop.add(filtered.enemy)
-      filteredNames.enemy.push(await this.getImage(layer.crop.toDataURL()))
-      filtered.enemy.destroy()
+      for (const name of [...filteredNames.ally, ...filteredNames.enemy]) {
+        const result = await this.recognize(name.currentSrc)
+        this.names.push(result.replace(/[^0-9a-z-A-Z]/g, ""))
+      }
     }
-
-    for (const name of [...filteredNames.ally, ...filteredNames.enemy]) {
-      const result = await this.recognize(name.currentSrc)
-      this.names.push(result.replace(/[^0-9a-z-A-Z]/g, ""))
-    }
-  }
+  },
 })
 </script>
 
