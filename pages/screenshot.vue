@@ -1,8 +1,10 @@
 <template lang="pug">
   v-container
-    v-row(justify="center" align="center")
+    v-row(justify="center" align="center").d-none
       v-col(id="mainStage")
       v-col(id="cropStage")
+    v-row
+      v-col {{ names }}
 </template>
 
 <script lang="ts">
@@ -14,15 +16,15 @@ export default Vue.extend({
   name: "screenshot",
   data() {
     return {
-
+      names: [] as string[]
     }
   },
   methods: {
     /**
      * Run image text recognition
      */
-    async recognize(image: string) {
-      return await Tesseract.recognize(image,'eng', { logger: m => console.log(m) })
+    async recognize(image: string): Promise<string> {
+      return Tesseract.recognize(image,'eng')
         .then(({ data: { text } }) => {
           return text
         })
@@ -190,6 +192,11 @@ export default Vue.extend({
       layer.crop.add(filtered.enemy)
       filteredNames.enemy.push(await this.getImage(layer.crop.toDataURL()))
       filtered.enemy.destroy()
+    }
+
+    for (const name of [...filteredNames.ally, ...filteredNames.enemy]) {
+      const result = await this.recognize(name.currentSrc)
+      this.names.push(result.replace(/ /g,''))
     }
   }
 })
