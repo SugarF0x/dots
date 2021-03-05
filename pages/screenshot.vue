@@ -4,11 +4,31 @@
       v-col(id="mainStage")
       v-col(id="cropStage")
     v-row(justify="center" v-if="progress < 100")
-      Dashboard(:uppy="uppy" :props="{ theme: 'dark' }" v-if="state === 'init'")
+      div.text-center.headline.mb-5(v-if="error") {{ error }}
+      Dashboard(:uppy="uppy" :props="{ theme: 'dark' }" v-if="steps === 0")
       div.text-center(v-else)
         v-progress-circular.mb-2(:value="progress")
         div {{ progressMessage }}
-
+    div(v-else)
+      div(v-if="$auth.loggedIn")
+        v-row(justify="center")
+          v-col(
+            cols="12"
+            md="6"
+            v-for="(name, index) in names"
+            :key="name + index"
+          )
+            NewEntry(
+              :name="name"
+              @created="handleNewEntry"
+            )
+        v-divider.mb-5
+      Entry(
+        v-for="entry in entries"
+        :key="entry.name + entry.date + entry.comment.length"
+        :data="entry"
+        :name="entry.name"
+      )
 </template>
 
 <script lang="ts">
@@ -30,20 +50,17 @@ export default Vue.extend({
   },
   data() {
     return {
-      state: 'init', // init | parsing | finished
+      steps: 0,
       names: [] as string[],
-      entries: [] as Entry[]
+      error: ''
     }
   },
   computed: {
-    progress(): number {
-      let result = this.names.length
-      if (this.entries.length) result++
-      return Math.floor((result/11) * 100)
-    },
+    entries(): Entry[] { return this.$store.state.entries.searchResults },
+    progress(): number { return Math.floor((this.steps/11) * 100) },
     progressMessage(): string {
       let message = ''
-      if (this.names.length < 10) message = `Анализируем имена (${this.names.length+1}/10)...`
+      if (this.steps <= 10) message = `Анализируем имена (${this.steps}/10)...`
       else message = 'Ищем совпадения в базе данных...'
       return message
     },
@@ -54,7 +71,8 @@ export default Vue.extend({
           allowedFileTypes: ['image/*']
         },// @ts-ignore
         onBeforeFileAdded: (file: any) => {
-          this.state = 'parsing'
+          this.steps = 1
+          this.error = ''
 
           const reader = new FileReader()
           reader.readAsDataURL(file.data)
@@ -67,6 +85,10 @@ export default Vue.extend({
     }
   },
   methods: {
+    handleNewEntry(entry: Entry) {
+      this.$store.commit('ADD_NEW_ENTRY', entry)
+    },
+
     /**
      * Run image text recognition
      */
@@ -234,12 +256,37 @@ export default Vue.extend({
         filtered.enemy.destroy()
       }
 
+      /**
+       * Parse images for names and push into data
+       */
       for (const name of [...filteredNames.ally, ...filteredNames.enemy]) {
         const result = await this.recognize(name.currentSrc)
         this.names.push(result.replace(/[^0-9a-z-A-Z]/g, ""))
+        this.steps++
+      }
+
+      /**
+       * Check if scan is likely an error
+       */
+      if (this.names.filter(name => name.length > 2).length < 5) {
+        this.error = 'Что-то пошло не так: невозможно распознать текст'
+        this.names = []
+        this.steps = 0
+        this.uppy.reset()
+      }
+
+      /**
+       * Search for names in DB
+       */
+      if (!this.error) {
+        await this.$store.dispatch('bulkSearch', this.names)
+        this.steps++
       }
     }
   },
+  mounted() {
+    if (this.entries.length) this.$store.commit('DUMP_SEARCH_RESULTS')
+  }
 })
 </script>
 

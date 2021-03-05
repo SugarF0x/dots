@@ -1,8 +1,9 @@
 import * as express from 'express'
 import Dots from '../schemas/Dots'
 import { Entry } from "~/assets/consts"
+import { levenshtein } from "../../assets/utils"
 import consola from 'consola'
-const router  = express.Router()
+const router = express.Router()
 
 module.exports = () => {
   router.post("/addEntry", async (req, res) => {
@@ -50,6 +51,32 @@ module.exports = () => {
   router.get('/getAll', async (req, res) => {
     Dots.find({}, null, { sort: { date: -1 } })
       .then((entries: Entry[]) => resThen(res, entries))
+      .catch((err: Error) => resCatch(res, err))
+  })
+
+  router.get('/bulkSearch', async (req, res) => {
+    let names = req.query.names as string[]
+    names = names.filter(name => {
+      let distance = 100;
+      ['SugarF0x', 'UNFORGIVEN', 'Maks333f', 'Just'].forEach(ignored => {
+        let lev = levenshtein(ignored.toLowerCase(), name.toLowerCase())
+        if (lev < distance) distance = lev
+      })
+      if (distance >= 2) return true
+    })
+
+    Dots.find({}, null, { sort: { date: -1 } })
+      .then((entries: Entry[]) => {
+        entries = entries.filter(entry => {
+          let distance = 100
+          names.forEach(name => {
+            let lev = levenshtein(name.toLowerCase(), entry.name.toLowerCase())
+            if (lev < distance) distance = lev
+          })
+          if (distance <= 2) return true
+        })
+        resThen(res, entries)
+      })
       .catch((err: Error) => resCatch(res, err))
   })
 

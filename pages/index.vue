@@ -5,6 +5,8 @@
       :loading="isLoading"
       v-on:change="handleInput"
       placeholder="Введите имя дебила"
+      append-icon="mdi-image"
+      @click:append="$router.push('/screenshot')"
     )
     NewEntry(
       v-if="$auth.loggedIn && query.length"

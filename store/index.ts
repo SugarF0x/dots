@@ -63,6 +63,15 @@ export const actions: ActionTree<RootState, RootState> = {
 
     commit('FINISH_LOADING_PROCESS')
   },
+  async bulkSearch({ commit }, payload) {
+    commit('START_LOADING_PROCESS')
+    const response = await this.$axios.$get('/db/bulkSearch', { params: { names: payload } }) as { result: number, message: Entry[] }
+    if (response.result) {
+      commit('SET_SEARCH_RESULTS', response.message)
+    }
+
+    commit('FINISH_LOADING_PROCESS')
+  },
   async getTotalEntries({ commit }) {
     commit('START_LOADING_PROCESS')
     const response = await this.$axios.$get('/db/getCount') as { result: number, message: number }
