@@ -50,30 +50,30 @@ export default Vue.extend({
      */
     getCropConfig(img: HTMLImageElement, type: 'ally' | 'enemy', n: number) {
       const allyCoords = [
-        {x: 105, y: 155},
-        {x: 275, y: 252},
-        {x: 275, y: 448},
-        {x: 448, y: 545},
-        {x: 448, y: 740}
+        {x: 110, y: 155},
+        {x: 280, y: 252},
+        {x: 280, y: 448},
+        {x: 451, y: 545},
+        {x: 451, y: 741}
       ]
       const enemyCoords = [
-        {x: 1420, y: 362},
-        {x: 1255, y: 460},
-        {x: 1255, y: 655},
-        {x: 1085, y: 755},
-        {x: 1085, y: 950}
+        {x: 1418, y: 365},
+        {x: 1253, y: 463},
+        {x: 1253, y: 658},
+        {x: 1083, y: 756},
+        {x: 1083, y: 950}
       ]
 
       return {
         x: 0,
         y: 0,
         image: img,
-        width: 140,
-        height: 20,
+        width: 130,
+        height: 16,
         crop: {
           ...(type === 'ally' ? allyCoords[n] : enemyCoords[n]),
-          width: 140,
-          height: 20
+          width: 130,
+          height: 16
         }
       }
     }
@@ -90,8 +90,8 @@ export default Vue.extend({
       }),
       crop: new Konva.Stage({
         container: 'cropStage',
-        width: 140,
-        height: 20
+        width: 130,
+        height: 16
       })
     }
 
