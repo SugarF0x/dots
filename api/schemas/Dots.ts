@@ -1,13 +1,5 @@
 import { HERO_NAMES } from "~/assets/consts"
 
-export interface IDots {
-  date: Date
-  name: string,
-  hero: typeof HERO_NAMES[number],
-  rating: number,
-  comment: string
-}
-
 const mongoose = require("mongoose")
 const dotsSchema = new mongoose.Schema({
   date: {

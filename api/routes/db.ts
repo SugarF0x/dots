@@ -1,5 +1,6 @@
 import * as express from 'express'
-import Dots, { IDots } from '../schemas/Dots'
+import Dots from '../schemas/Dots'
+import { Entry } from "~/assets/consts"
 import consola from 'consola'
 const router  = express.Router()
 
@@ -30,13 +31,13 @@ module.exports = () => {
   router.get('/search', async (req, res) => {
     let name = req.query.name
     Dots.find({ name: { $regex: name, $options: "i" } }, null, { sort: { date: -1 } })
-      .then((entries: IDots[]) => resThen(res, entries))
+      .then((entries: Entry[]) => resThen(res, entries))
       .catch((err: Error) => resCatch(res, err))
   })
 
   router.get('/getLastFive', async (req, res) => {
     Dots.find({}, null, { sort: { date: -1 }, limit: 5 })
-      .then((entries: IDots[]) => resThen(res, entries))
+      .then((entries: Entry[]) => resThen(res, entries))
       .catch((err: Error) => resCatch(res, err))
   })
 
@@ -48,7 +49,7 @@ module.exports = () => {
 
   router.get('/getAll', async (req, res) => {
     Dots.find({}, null, { sort: { date: -1 } })
-      .then((entries: IDots[]) => resThen(res, entries))
+      .then((entries: Entry[]) => resThen(res, entries))
       .catch((err: Error) => resCatch(res, err))
   })
 
