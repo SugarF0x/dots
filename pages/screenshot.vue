@@ -3,7 +3,6 @@
     v-row(justify="center" align="center")
       v-col(id="mainStage")
       v-col(id="cropStage")
-      v-col(id="filterStage")
 </template>
 
 <script lang="ts">
@@ -93,11 +92,6 @@ export default Vue.extend({
       width: 140,
       height: 20
     })
-    const FILTER_STAGE = new Konva.Stage({
-      container: 'filterStage',
-      width: 140,
-      height: 20
-    })
 
     /**
      * Define working Layers
@@ -106,11 +100,10 @@ export default Vue.extend({
     MAIN_STAGE.add(MAIN_LAYER)
     const CROP_LAYER = new Konva.Layer()
     CROP_STAGE.add(CROP_LAYER)
-    const FILTER_LAYER = new Konva.Layer()
-    FILTER_STAGE.add(FILTER_LAYER)
 
     /**
      * Get source image that will be used in every new Image instance
+     * TODO: replace this section with Uppy file upload
      */
     const SOURCE_IMAGE = await this.getImage(require('~/assets/dummyFullHD.png'))
 
@@ -179,13 +172,13 @@ export default Vue.extend({
       })
 
       FILTERED_ALLY_IMAGE.cache()
-      FILTER_LAYER.add(FILTERED_ALLY_IMAGE)
-      FILTERED_ALLY_NAMES.push(await this.getImage(FILTER_STAGE.toDataURL()))
+      CROP_LAYER.add(FILTERED_ALLY_IMAGE)
+      FILTERED_ALLY_NAMES.push(await this.getImage(CROP_LAYER.toDataURL()))
       FILTERED_ALLY_IMAGE.destroy()
 
       FILTERED_ENEMY_IMAGE.cache()
-      FILTER_LAYER.add(FILTERED_ENEMY_IMAGE)
-      FILTERED_ENEMY_NAMES.push(await this.getImage(FILTER_STAGE.toDataURL()))
+      CROP_LAYER.add(FILTERED_ENEMY_IMAGE)
+      FILTERED_ENEMY_NAMES.push(await this.getImage(CROP_LAYER.toDataURL()))
       FILTERED_ENEMY_IMAGE.destroy()
     }
   }
