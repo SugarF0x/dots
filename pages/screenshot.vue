@@ -196,7 +196,7 @@ export default Vue.extend({
 
     for (const name of [...filteredNames.ally, ...filteredNames.enemy]) {
       const result = await this.recognize(name.currentSrc)
-      this.names.push(result.replace(/ /g,''))
+      this.names.push(result.replace(/[^0-9a-z-A-Z]/g, ""))
     }
   }
 })
