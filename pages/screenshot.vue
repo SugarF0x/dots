@@ -1,16 +1,21 @@
 <template lang="pug">
   v-container
-    v-row(justify="center" align="center").d-none
+    v-row.d-none
       v-col(id="mainStage")
       v-col(id="cropStage")
-    v-row(justify="center")
+    v-row(justify="center" v-if="progress < 100")
       Dashboard(:uppy="uppy" :props="{ theme: 'dark' }" v-if="state === 'init'")
+      div.text-center(v-else)
+        v-progress-circular.mb-2(:value="progress")
+        div {{ progressMessage }}
+
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import Konva from 'konva'
 import Tesseract from "tesseract.js"
+import { Entry } from "~/assets/consts"
 
 import Uppy from '@uppy/core'
 import { Dashboard } from '@uppy/vue'
@@ -26,10 +31,22 @@ export default Vue.extend({
   data() {
     return {
       state: 'init', // init | parsing | finished
-      names: [] as string[]
+      names: [] as string[],
+      entries: [] as Entry[]
     }
   },
   computed: {
+    progress(): number {
+      let result = this.names.length
+      if (this.entries.length) result++
+      return Math.floor((result/11) * 100)
+    },
+    progressMessage(): string {
+      let message = ''
+      if (this.names.length < 10) message = `Анализируем имена (${this.names.length+1}/10)...`
+      else message = 'Ищем совпадения в базе данных...'
+      return message
+    },
     uppy() { // @ts-ignore
       return new Uppy({
         id: 'uppy',
