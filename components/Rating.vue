@@ -1,11 +1,11 @@
 <template lang="pug">
   div.pt-3
-    div(v-if="readonly").text-center
+    div(v-if="!edit").text-center
       v-icon(
         v-for="n in 5"
         :key="'rate-'+n"
       ) {{ getStar(n) }}
-    div(v-else)
+    div(v-else).text-center
       v-btn(
         v-for="n in 5"
         :key="'rate-'+n"
@@ -13,7 +13,6 @@
         small
         max-width="25"
         @click="selectRating(n)"
-        :disabled="readonly"
       )
         v-icon {{ getStar(n) }}
 </template>
@@ -28,38 +27,33 @@ export default Vue.extend({
       type: Number,
       default: 0
     },
-    readonly: {
+    edit: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data() {
     return {
-      selected: this.rating
-    }
-  },
-  watch: {
-    rating(val) {
-      this.selected = val
+      selectedRating: this.rating
     }
   },
   methods: {
     getStar(n: number) {
-      if (this.selected >= n) {
+      if (this.selectedRating >= n) {
         return 'mdi-star'
-      } else if (this.selected - n > 0) {
+      } else if (this.selectedRating - n > 0) {
         return 'mdi-star-half-full'
       } else {
         return 'mdi-star-outline'
       }
     },
     selectRating(n: number) {
-      if (this.selected === n) {
-        this.selected = 0
+      if (this.selectedRating === n) {
+        this.selectedRating = 0
       } else {
-        this.selected = n
+        this.selectedRating = n
       }
-      this.$emit('selected', this.selected)
+      this.$emit('selected', this.selectedRating)
     }
   }
 })

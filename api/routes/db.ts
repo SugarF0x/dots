@@ -82,7 +82,7 @@ module.exports = () => {
           })
           if (distance <= 1) return true
         })
-        resThen(res, entries)
+        resThen(res, entries) // TODO: messages are to contain not just the array of entries, but also the names that did match to tag parse results as matched
       })
       .catch((err: Error) => resCatch(res, err))
   })
