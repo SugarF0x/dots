@@ -55,10 +55,17 @@ module.exports = () => {
   })
 
   router.get('/bulkSearch', async (req, res) => {
+    const IGNORED_NAMES = [
+      'SugarF0x',
+      'UNFORGIVEN',
+      'Maks333f',
+      'Just'
+    ]
+
     let names = req.query.names as string[]
     names = names.filter(name => {
       let distance = 100;
-      ['SugarF0x', 'UNFORGIVEN', 'Maks333f', 'Just'].forEach(ignored => {
+      IGNORED_NAMES.forEach(ignored => {
         let lev = levenshtein(ignored.toLowerCase(), name.toLowerCase())
         if (lev < distance) distance = lev
       })
@@ -71,9 +78,9 @@ module.exports = () => {
           let distance = 100
           names.forEach(name => {
             let lev = levenshtein(name.toLowerCase(), entry.name.toLowerCase())
-            if (lev < distance) distance = lev
+            if (lev < distance && !IGNORED_NAMES.includes(entry.name)) distance = lev
           })
-          if (distance <= 2) return true
+          if (distance <= 1) return true
         })
         resThen(res, entries)
       })
