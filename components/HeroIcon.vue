@@ -100,6 +100,8 @@ export default Vue.extend({
 .add
   width: 100%
   height: 100%
+  max-width: 125px
+  max-height: 125px
   font-size: 10rem
   color: #141f52 !important
   opacity: .25
