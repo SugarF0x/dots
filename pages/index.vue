@@ -8,7 +8,7 @@
       append-icon="mdi-image"
       @click:append="$router.push('/screenshot')"
     )
-    RefinedEntry(
+    RefinedEntry.mb-5(
       v-if="$auth.loggedIn && query.length"
       :key="query"
       :entry=`{
@@ -16,14 +16,14 @@
       }`
       edit
     )
-    RefinedEntry(
+    RefinedEntry.mb-5(
       v-for="entry in entries"
       :key="entry.name + entry.date"
       :entry="entry"
     )
     div(v-if="!entries.length && !query.length")
       div.headline.text-center.mb-5 Последние пять дебилов
-      RefinedEntry(
+      RefinedEntry.mb-5(
         v-for="entry in lastFive"
         :key="'last' + entry.name + entry.date"
         :entry="entry"

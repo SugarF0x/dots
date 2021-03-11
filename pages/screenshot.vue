@@ -25,8 +25,8 @@
                 edit
                 remember
               )
-          v-divider.mb-5
-        RefinedEntry(
+          v-divider.my-5
+        RefinedEntry.mb-5(
           v-for="entry in entries"
           :key="entry.name + entry.date"
           :entry="entry"
@@ -102,10 +102,6 @@ export default Vue.extend({
     }
   },
   methods: {
-    handleNewEntry(entry: Entry) {
-      this.$store.commit('ADD_NEW_ENTRY', entry)
-    },
-
     /**
      * Run image text recognition
      */

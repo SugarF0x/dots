@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-card.pa-5.mb-0.mb-sm-5.entry.rounded-xl(
+  v-card.pa-5.mb-0.entry.rounded-xl(
     elevation="12"
   )
     // Mobile mode

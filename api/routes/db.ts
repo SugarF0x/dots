@@ -82,7 +82,22 @@ module.exports = () => {
           })
           if (distance <= 1) return true
         })
-        resThen(res, entries) // TODO: messages are to contain not just the array of entries, but also the names that did match to tag parse results as matched
+        resThen(res, entries)
+
+        // TODO: take another look at this
+        // TODO: messages are to contain not just the array of entries, but also the names that did match to tag parse results as matched
+        // let message = [] as { match: string; entry: Entry }[]
+        // entries.forEach(entry => {
+        //   let distance = 100
+        //   let match = ''
+        //   names.forEach(name => {
+        //     let lev = levenshtein(name.toLowerCase(), entry.name.toLowerCase())
+        //     if (lev < distance && !IGNORED_NAMES.includes(entry.name)) distance = lev
+        //     if (lev <= 1) match = name
+        //   })
+        //   if (distance <= 1) message.push({ match, entry })
+        // })
+        // resThen(res, message)
       })
       .catch((err: Error) => resCatch(res, err))
   })
