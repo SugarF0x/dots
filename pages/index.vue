@@ -8,25 +8,25 @@
       append-icon="mdi-image"
       @click:append="$router.push('/screenshot')"
     )
-    NewEntry(
+    RefinedEntry(
       v-if="$auth.loggedIn && query.length"
       :key="query"
-      :name="query"
-      @created="handleNewEntry"
+      :entry=`{
+        name: query,
+      }`
+      edit
     )
-    Entry(
+    RefinedEntry(
       v-for="entry in entries"
-      :key="entry.name + entry.date + entry.comment.length"
-      :data="entry"
-      :name="entry.name"
+      :key="entry.name + entry.date"
+      :entry="entry"
     )
     div(v-if="!entries.length && !query.length")
       div.headline.text-center.mb-5 Последние пять дебилов
-      Entry(
+      RefinedEntry(
         v-for="entry in lastFive"
-        :key="'last' + entry.name + entry.comment.length"
-        :data="entry"
-        :name="entry.name"
+        :key="'last' + entry.name + entry.date"
+        :entry="entry"
       )
 </template>
 
