@@ -4,10 +4,7 @@
       v-col(cols="12" sm="6")
         RefinedEntry(
           :entry=`{
-            date: new Date(),
             name: 'Меня запомнят',
-            hero: 'ana',
-            rating: 5,
             comment: 'это как?'
           }`
           edit
@@ -16,10 +13,8 @@
       v-col(cols="12" sm="6")
         RefinedEntry(
           :entry=`{
-            date: new Date(),
             name: 'А меня сбросят',
             hero: 'alexstraza',
-            rating: 1,
             comment: 'лошара'
           }`
           side="right"
@@ -29,13 +24,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import RefinedEntry from "~/components/RefinedEntry.vue"
 
 export default Vue.extend({
-  name: "test",
-  components: {
-    RefinedEntry
-  }
+  name: "test"
 })
 </script>
 

@@ -121,6 +121,14 @@
 import Vue, { PropType } from 'vue'
 import { Entry, HERO_NAMES } from "~/assets/consts"
 
+const DEFAULT_DATA = {
+  date: new Date(),
+  name: '',
+  hero: 'random',
+  rating: 0,
+  comment: ''
+} as Entry
+
 export default Vue.extend({
   name: "RefinedEntry",
   props: {
@@ -135,13 +143,7 @@ export default Vue.extend({
     entry: { // Initial Entry data
       type: Object as PropType<Entry>,
       default: (): Entry => {
-        return {
-          date: new Date(),
-          name: '',
-          hero: 'random',
-          rating: 0,
-          comment: ''
-        }
+        return DEFAULT_DATA
       }
     },
     match: { // Match element if one is found
@@ -172,6 +174,9 @@ export default Vue.extend({
     canSubmit(): boolean { return this.data.comment.length > 0 && this.data.name.length > 0 && !this.isSubmitted }
   },
   methods: {
+    assignData() {
+      this.data = Object.assign({}, this.data, DEFAULT_DATA, this.entry)
+    },
     selectRating(n: number) {
       this.data.rating = n
     },
@@ -193,6 +198,9 @@ export default Vue.extend({
 
       this.isLoading = false
     }
+  },
+  created() {
+    this.assignData()
   }
 })
 </script>
