@@ -4,7 +4,7 @@
       :entry=`{
         date: new Date(),
         name: 'The Stuped of ass shit gay',
-        hero: null,
+        hero: 'random',
         rating: 1,
         comment: 'piss'
       }`

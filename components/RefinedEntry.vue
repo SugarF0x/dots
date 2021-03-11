@@ -30,18 +30,64 @@
         )
         div.text-center.mt-2 {{ data.date.toLocaleDateString() }}
       v-col.mt-3.comment.rounded-lg(cols="12")
-        div(v-if="!edit").mt-2 {{ data.comment }}
+        div(v-if="!edit") {{ data.comment }}
         v-textarea.pt-0.mt-0(
           v-else
           v-model="data.comment"
           :hide-details="true"
+          rows="3"
         )
       v-btn.mt-3(
+        v-if="edit"
         color="primary"
         block
         :disabled="!canSubmit"
         @click="submit"
       ) Отправить
+
+    v-row(
+      v-else
+      no-gutters
+    )
+      v-col.flex-grow-0.mr-5
+        HeroIcon.avatar(
+          v-once
+          :edit="edit"
+          :hero="data.hero"
+          @selected="selectHero"
+        )
+        Rating(
+          v-once
+          :rating="data.rating"
+          :edit="edit"
+          @selected="selectRating"
+        )
+        v-btn.mt-3(
+          v-if="edit"
+          color="primary"
+          block
+          :disabled="!canSubmit"
+          @click="submit"
+        ) Отправить
+      v-col.d-flex.flex-column
+        div.headline.mb-5.d-flex
+          div.headline.title.rounded-pill.px-5.flex-grow-1
+            div(v-if="!edit") {{ data.name }}
+            v-text-field.mx-5.pt-0.mt-2.my-2.headline(
+              v-else
+              v-model="data.name"
+              :hide-details="true"
+            )
+          div.text-center.ml-5.flex-grow-0.my-auto {{ new Date(data.date).toLocaleDateString() }}
+        div.comment.rounded-lg
+          div(v-if="!edit") {{ data.comment }}
+          v-textarea.pt-0.mt-0(
+            v-else
+            v-model="data.comment"
+            :hide-details="true"
+            rows="4"
+          )
+
     v-overlay(
       v-if="isLoading"
       absolute
@@ -50,19 +96,6 @@
         indeterminate
         size="100"
       )
-
-    //v-row(
-    //  v-else
-    //  no-gutters
-    //)
-    //  v-col.bar.flex-grow-0.mr-5
-    //    HeroIcon(:hero="data ? data.hero : null")
-    //    Rating(:rating="data ? data.rating : 0")
-    //  v-col.right
-    //    div.headline.mb-5.d-flex
-    //      div.title.flex-grow-1 {{ data.name }}
-    //      div.text-center.ml-5.flex-grow-0.my-auto {{ new Date(data.date).toLocaleDateString() }}
-    //    div.comment {{ data.comment }}
 </template>
 
 <script lang="ts">
@@ -125,22 +158,17 @@ export default Vue.extend({
       this.data.hero = h
     },
     async submit() {
-      console.log(this.data) // TODO: enable this on release
-      // const resetEntry = () => {
-      //   this.isLoading = false
-      //   Object.assign(this.data, this.entry)
-      // }
-      //
-      // this.isLoading = true
-      //
-      // let response = await this.$axios.post('/db/addEntry', this.data)
-      //   .then((response) => {
-      //     this.$emit('created', Object.assign({}, this.data, { date: new Date() }))
-      //     resetEntry()
-      //   })
-      //   .catch((error) => {
-      //     console.error(error)
-      //   })
+      this.isLoading = true
+
+      await this.$axios.post('/db/addEntry', this.data)
+        .then(() => {
+          this.$store.commit('ADD_NEW_ENTRY', Object.assign({}, this.data, { date: new Date() }))
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+
+      this.isLoading = false
     }
   }
 })
