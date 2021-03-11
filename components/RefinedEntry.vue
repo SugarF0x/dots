@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-card.pa-5.mb-5.entry.rounded-xl(
+  v-card.pa-5.mb-0.mb-sm-5.entry.rounded-xl(
     elevation="12"
   )
     // Mobile mode
@@ -79,7 +79,7 @@
               v-if="!edit"
               :class="side === 'right' ? 'text-right' : ''"
             ) {{ data.name }}
-            v-text-field.mx-5.pt-0.mt-2.my-2.headline(
+            v-text-field.mx-5.mx-sm-0.pt-0.mt-2.my-2.headline(
               v-else
               v-model="data.name"
               :hide-details="true"

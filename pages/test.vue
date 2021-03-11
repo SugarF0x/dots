@@ -1,7 +1,7 @@
 <template lang="pug">
   v-container
     v-row
-      v-col(cols="6")
+      v-col(cols="12" sm="6")
         RefinedEntry(
           :entry=`{
             date: new Date(),
@@ -12,7 +12,7 @@
           }`
           edit
         )
-      v-col(cols="6")
+      v-col(cols="12" sm="6")
         RefinedEntry(
           :entry=`{
             date: new Date(),
