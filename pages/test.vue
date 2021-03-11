@@ -1,13 +1,6 @@
 <template lang="pug">
   v-container
     RefinedEntry(
-      :entry=`{
-        date: new Date(),
-        name: 'The Stuped of ass shit gay',
-        hero: 'random',
-        rating: 1,
-        comment: 'piss'
-      }`
       edit
     )
 </template>

@@ -2,6 +2,7 @@
   v-card.pa-5.mb-5.entry.rounded-xl(
     elevation="12"
   )
+    // Mobile mode
     v-row(
       v-if="size === 'small'"
       no-gutters
@@ -45,6 +46,7 @@
         @click="submit"
       ) Отправить
 
+    // Desktop mode
     v-row(
       v-else
       no-gutters
@@ -88,6 +90,7 @@
             rows="4"
           )
 
+    // Loading overlay
     v-overlay(
       v-if="isLoading"
       absolute
@@ -96,6 +99,17 @@
         indeterminate
         size="100"
       )
+
+    // Match found star
+    v-btn.star(
+      v-if="match"
+      icon
+      @click="$vuetify.goTo(match)"
+    )
+      v-icon(
+        color="yellow"
+        x-large
+      ) mdi-star
 </template>
 
 <script lang="ts">
@@ -125,15 +139,15 @@ export default Vue.extend({
         }
       }
     },
-    isEntryFound: { // Whether an existing Entry has been found on Bulk Search
-      type: Boolean,
-      default: false
+    match: { // Match element if one is found
+      type: HTMLElement
     }
   },
   data() {
     return {
       data: this.entry,
-      isLoading: false
+      isLoading: false,
+      isSubmitted: false
     }
   },
   computed: {
@@ -146,8 +160,7 @@ export default Vue.extend({
           return 'large'
       }
     },
-    canSubmit(): boolean { return this.data.comment.length > 0 && this.data.name.length > 0 },
-    // hasMatches(): boolean { return this.$store.state.entries.searchResults.some((entry: Entry) => entry.name === this.data.name) } // TODO: this will be used in showing a star
+    canSubmit(): boolean { return this.data.comment.length > 0 && this.data.name.length > 0 }
   },
   methods: {
     selectRating(n: number) {
@@ -162,6 +175,7 @@ export default Vue.extend({
       await this.$axios.post('/db/addEntry', this.data)
         .then(() => {
           this.$store.commit('ADD_NEW_ENTRY', Object.assign({}, this.data, { date: new Date() }))
+          this.isSubmitted = true
         })
         .catch((error) => {
           console.error(error)
@@ -176,4 +190,8 @@ export default Vue.extend({
 <style lang="sass" scoped>
 .avatar
   min-width: 125px
+.star
+  position: absolute
+  top: -0.5rem
+  right: -0.5rem
 </style>
