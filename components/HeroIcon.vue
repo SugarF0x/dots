@@ -58,6 +58,9 @@ export default Vue.extend({
       return 'random'
     }
   },
+  watch: {
+    hero(n) { this.selectedHero = n }
+  },
   methods: {
     openDrawer() {
       this.drawer = true

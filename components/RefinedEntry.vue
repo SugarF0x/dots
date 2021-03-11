@@ -190,7 +190,7 @@ export default Vue.extend({
         .then(() => {
           this.$store.commit('ADD_NEW_ENTRY', Object.assign({}, this.data, { date: new Date() }))
           if (this.remember) this.isSubmitted = true
-          else this.data = this.entry
+          else this.assignData()
         })
         .catch((error) => {
           console.error(error)
