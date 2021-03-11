@@ -20,7 +20,7 @@
           v-text-field.mx-5.pt-0.mt-2.my-2.headline(
             v-else
             v-model="data.name"
-            :hide-details="true"
+            hide-details
           )
         Rating(
           :rating="data.rating"
@@ -33,7 +33,7 @@
         v-textarea.pt-0.mt-0(
           v-else
           v-model="data.comment"
-          :hide-details="true"
+          hide-details
           rows="3"
         )
       v-btn.mt-3(
@@ -78,7 +78,7 @@
             v-text-field.mx-5.mx-sm-0.pt-0.mt-2.my-2.headline(
               v-else
               v-model="data.name"
-              :hide-details="true"
+              hide-details
               :reverse="side === 'right'"
             )
           div.text-center.ml-5.flex-grow-0.my-auto.date(v-if="!edit") {{ new Date(data.date).toLocaleDateString() }}
@@ -90,7 +90,7 @@
           v-textarea.pt-0.mt-0(
             v-else
             v-model="data.comment"
-            :hide-details="true"
+            hide-details
             rows="4"
             :reverse="side === 'right'"
           )
