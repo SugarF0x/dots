@@ -28,7 +28,7 @@
           :edit="edit"
           @selected="selectRating"
         )
-        div.text-center.mt-2 {{ data.date.toLocaleDateString() }}
+        div.text-center.mt-2(v-if="!edit") {{ data.date.toLocaleDateString() }}
       v-col.mt-3.comment.rounded-lg(cols="12")
         div(v-if="!edit") {{ data.comment }}
         v-textarea.pt-0.mt-0(
@@ -78,7 +78,7 @@
               v-model="data.name"
               :hide-details="true"
             )
-          div.text-center.ml-5.flex-grow-0.my-auto {{ new Date(data.date).toLocaleDateString() }}
+          div.text-center.ml-5.flex-grow-0.my-auto(v-if="!edit") {{ new Date(data.date).toLocaleDateString() }}
         div.comment.rounded-lg
           div(v-if="!edit") {{ data.comment }}
           v-textarea.pt-0.mt-0(
@@ -102,8 +102,6 @@
 import Vue, { PropType } from 'vue'
 import { Entry, HERO_NAMES } from "~/assets/consts"
 
-type Sides = 'left' | 'right'
-
 export default Vue.extend({
   name: "RefinedEntry",
   props: {
@@ -112,7 +110,7 @@ export default Vue.extend({
       default: false
     },
     side: { // Determines which sides the Avatar and text will stick to
-      type: String as PropType<Sides>,
+      type: String as PropType<'left' | 'right'>,
       default: 'left'
     },
     entry: { // Initial Entry data
@@ -148,7 +146,8 @@ export default Vue.extend({
           return 'large'
       }
     },
-    canSubmit(): boolean { return this.data.comment.length > 0 && this.data.name.length > 0 }
+    canSubmit(): boolean { return this.data.comment.length > 0 && this.data.name.length > 0 },
+    // hasMatches(): boolean { return this.$store.state.entries.searchResults.some((entry: Entry) => entry.name === this.data.name) } // TODO: this will be used in showing a star
   },
   methods: {
     selectRating(n: number) {
