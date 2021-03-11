@@ -18,16 +18,17 @@
             v-for="(name, index) in names"
             :key="name + index"
           )
-            NewEntry(
-              :name="name"
-              @created="handleNewEntry"
+            RefinedEntry(
+              :entry="{ name: name }"
+              :side="index%2 ? 'right' : 'left'"
+              edit
+              remember
             )
         v-divider.mb-5
-      Entry(
+      RefinedEntry(
         v-for="entry in entries"
-        :key="entry.name + entry.date + entry.comment.length"
-        :data="entry"
-        :name="entry.name"
+        :key="entry.name + entry.date"
+        :entry="entry"
       )
 </template>
 
@@ -256,13 +257,16 @@ export default Vue.extend({
         filtered.enemy.destroy()
       }
 
+      // TODO: refactor this into something better? this feels so bad
       /**
        * Parse images for names and push into data
        */
-      for (const name of [...filteredNames.ally, ...filteredNames.enemy]) {
-        const result = await this.recognize(name.currentSrc)
-        this.names.push(result.replace(/[^0-9a-z-A-Z]/g, ""))
-        this.steps++
+      for (let i=0; i<5; i++) {
+        for (let y=0; y<2; y++) {
+          const result = await this.recognize(filteredNames[y%2 ? 'enemy' : 'ally'][i].currentSrc)
+          this.names.push(result.replace(/[^0-9a-z-A-Z]/g, ""))
+          this.steps++
+        }
       }
 
       /**
