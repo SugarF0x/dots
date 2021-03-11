@@ -5,21 +5,22 @@
         RefinedEntry(
           :entry=`{
             date: new Date(),
-            name: 'А я слева',
+            name: 'Меня запомнят',
             hero: 'ana',
             rating: 5,
-            comment: 'круто'
+            comment: 'это как?'
           }`
           edit
+          remember
         )
       v-col(cols="12" sm="6")
         RefinedEntry(
           :entry=`{
             date: new Date(),
-            name: 'Я справа',
+            name: 'А меня сбросят',
             hero: 'alexstraza',
-            rating: 5,
-            comment: 'заебись'
+            rating: 1,
+            comment: 'лошара'
           }`
           side="right"
           edit

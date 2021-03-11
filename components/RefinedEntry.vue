@@ -9,29 +9,27 @@
     )
       v-col(cols="4").d-flex.justify-center.align-center
         HeroIcon.avatar(
-          v-once
-          :edit="edit"
+          :edit="edit && !isSubmitted"
           :hero="data.hero"
           @selected="selectHero"
         )
       v-spacer
       v-col(cols="7")
         div.headline.title.text-center.rounded-pill.px-5
-          div(v-if="!edit") {{ data.name }}
+          div(v-if="!edit || isSubmitted") {{ data.name }}
           v-text-field.mx-5.pt-0.mt-2.my-2.headline(
             v-else
             v-model="data.name"
             :hide-details="true"
           )
         Rating(
-          v-once
           :rating="data.rating"
-          :edit="edit"
+          :edit="edit && !isSubmitted"
           @selected="selectRating"
         )
         div.text-center.mt-2(v-if="!edit") {{ data.date.toLocaleDateString() }}
       v-col.mt-3.comment.rounded-lg(cols="12")
-        div(v-if="!edit") {{ data.comment }}
+        div(v-if="!edit || isSubmitted") {{ data.comment }}
         v-textarea.pt-0.mt-0(
           v-else
           v-model="data.comment"
@@ -44,7 +42,7 @@
         block
         :disabled="!canSubmit"
         @click="submit"
-      ) Отправить
+      ) {{ !isSubmitted ? 'Отправить' : 'Отправлено' }}
 
     // Desktop mode
     v-row(
@@ -54,15 +52,13 @@
     )
       v-col.flex-grow-0.bar.mr-5
         HeroIcon.avatar(
-          v-once
-          :edit="edit"
+          :edit="edit && !isSubmitted"
           :hero="data.hero"
           @selected="selectHero"
         )
         Rating(
-          v-once
           :rating="data.rating"
-          :edit="edit"
+          :edit="edit && !isSubmitted"
           @selected="selectRating"
         )
         v-btn.mt-3(
@@ -71,12 +67,12 @@
           block
           :disabled="!canSubmit"
           @click="submit"
-        ) Отправить
+        ) {{ !isSubmitted ? 'Отправить' : 'Отправлено' }}
       v-col.d-flex.flex-column
         div.headline.mb-5.d-flex.namespace
           div.headline.title.rounded-pill.px-5.flex-grow-1
             div(
-              v-if="!edit"
+              v-if="!edit || isSubmitted"
               :class="side === 'right' ? 'text-right' : ''"
             ) {{ data.name }}
             v-text-field.mx-5.mx-sm-0.pt-0.mt-2.my-2.headline(
@@ -88,7 +84,7 @@
           div.text-center.ml-5.flex-grow-0.my-auto.date(v-if="!edit") {{ new Date(data.date).toLocaleDateString() }}
         div.comment.rounded-lg
           div(
-            v-if="!edit"
+            v-if="!edit || isSubmitted"
             :class="side === 'right' ? 'text-right' : ''"
           ) {{ data.comment }}
           v-textarea.pt-0.mt-0(
@@ -150,6 +146,10 @@ export default Vue.extend({
     },
     match: { // Match element if one is found
       type: HTMLElement
+    },
+    remember: { // Remember text and disable edit on submit instead of clearing form data
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -169,7 +169,7 @@ export default Vue.extend({
           return 'large'
       }
     },
-    canSubmit(): boolean { return this.data.comment.length > 0 && this.data.name.length > 0 }
+    canSubmit(): boolean { return this.data.comment.length > 0 && this.data.name.length > 0 && !this.isSubmitted }
   },
   methods: {
     selectRating(n: number) {
@@ -184,7 +184,8 @@ export default Vue.extend({
       await this.$axios.post('/db/addEntry', this.data)
         .then(() => {
           this.$store.commit('ADD_NEW_ENTRY', Object.assign({}, this.data, { date: new Date() }))
-          this.isSubmitted = true
+          if (this.remember) this.isSubmitted = true
+          else this.data = this.entry
         })
         .catch((error) => {
           console.error(error)
