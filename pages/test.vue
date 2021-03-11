@@ -1,8 +1,29 @@
 <template lang="pug">
   v-container
-    RefinedEntry(
-      edit
-    )
+    v-row
+      v-col(cols="6")
+        RefinedEntry(
+          :entry=`{
+            date: new Date(),
+            name: 'А я слева',
+            hero: 'ana',
+            rating: 5,
+            comment: 'круто'
+          }`
+          edit
+        )
+      v-col(cols="6")
+        RefinedEntry(
+          :entry=`{
+            date: new Date(),
+            name: 'Я справа',
+            hero: 'alexstraza',
+            rating: 5,
+            comment: 'заебись'
+          }`
+          side="right"
+          edit
+        )
 </template>
 
 <script lang="ts">

@@ -50,8 +50,9 @@
     v-row(
       v-else
       no-gutters
+      :class="side === 'right' ? 'reverse' : ''"
     )
-      v-col.flex-grow-0.mr-5
+      v-col.flex-grow-0.bar.mr-5
         HeroIcon.avatar(
           v-once
           :edit="edit"
@@ -72,22 +73,30 @@
           @click="submit"
         ) Отправить
       v-col.d-flex.flex-column
-        div.headline.mb-5.d-flex
+        div.headline.mb-5.d-flex.namespace
           div.headline.title.rounded-pill.px-5.flex-grow-1
-            div(v-if="!edit") {{ data.name }}
+            div(
+              v-if="!edit"
+              :class="side === 'right' ? 'text-right' : ''"
+            ) {{ data.name }}
             v-text-field.mx-5.pt-0.mt-2.my-2.headline(
               v-else
               v-model="data.name"
               :hide-details="true"
+              :reverse="side === 'right'"
             )
-          div.text-center.ml-5.flex-grow-0.my-auto(v-if="!edit") {{ new Date(data.date).toLocaleDateString() }}
+          div.text-center.ml-5.flex-grow-0.my-auto.date(v-if="!edit") {{ new Date(data.date).toLocaleDateString() }}
         div.comment.rounded-lg
-          div(v-if="!edit") {{ data.comment }}
+          div(
+            v-if="!edit"
+            :class="side === 'right' ? 'text-right' : ''"
+          ) {{ data.comment }}
           v-textarea.pt-0.mt-0(
             v-else
             v-model="data.comment"
             :hide-details="true"
             rows="4"
+            :reverse="side === 'right'"
           )
 
     // Loading overlay
@@ -194,4 +203,14 @@ export default Vue.extend({
   position: absolute
   top: -0.5rem
   right: -0.5rem
+.reverse
+  flex-flow: row-reverse
+  .bar
+    margin-right: 0 !important
+    margin-left: 1rem
+  .namespace
+    flex-flow: row-reverse
+    .date
+      margin-left: 0 !important
+      margin-right: 1rem
 </style>
