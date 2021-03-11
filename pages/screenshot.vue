@@ -1,35 +1,41 @@
 <template lang="pug">
   v-container
-    v-row.d-none
-      v-col(id="mainStage")
-      v-col(id="cropStage")
-    v-row(justify="center" v-if="progress < 100")
-      div.text-center.headline.mb-5(v-if="error") {{ error }}
-      Dashboard(:uppy="uppy" :props="{ theme: 'dark' }" v-if="steps === 0")
-      div.text-center(v-else)
-        v-progress-circular.mb-2(:value="progress")
-        div {{ progressMessage }}
-    div(v-else)
-      div(v-if="$auth.loggedIn")
-        v-row(justify="center")
-          v-col(
-            cols="12"
-            md="6"
-            v-for="(name, index) in names"
-            :key="name + index"
-          )
-            RefinedEntry(
-              :entry="{ name: name }"
-              :side="index%2 ? 'right' : 'left'"
-              edit
-              remember
+    div(v-if="size !== 'small'")
+      v-row.d-none
+        v-col(id="mainStage")
+        v-col(id="cropStage")
+      v-row(justify="center" v-if="progress < 100")
+        div.text-center.headline.mb-5(v-if="error") {{ error }}
+        Dashboard(:uppy="uppy" :props="{ theme: 'dark' }" v-if="steps === 0")
+        div.text-center(v-else)
+          v-progress-circular.mb-2(:value="progress")
+          div {{ progressMessage }}
+      div(v-else)
+        div(v-if="$auth.loggedIn")
+          v-row(justify="center")
+            v-col(
+              cols="12"
+              md="6"
+              v-for="(name, index) in names"
+              :key="name + index"
             )
-        v-divider.mb-5
-      RefinedEntry(
-        v-for="entry in entries"
-        :key="entry.name + entry.date"
-        :entry="entry"
-      )
+              RefinedEntry(
+                :entry="{ name: name }"
+                :side="index%2 ? 'right' : 'left'"
+                edit
+                remember
+              )
+          v-divider.mb-5
+        RefinedEntry(
+          v-for="entry in entries"
+          :key="entry.name + entry.date"
+          :entry="entry"
+        )
+    div(v-else)
+      v-row(justify="center")
+        v-col
+          v-card
+            v-card-text.text-center.headline Эта страница поддерживается только на компьютере
 </template>
 
 <script lang="ts">
@@ -57,6 +63,16 @@ export default Vue.extend({
     }
   },
   computed: {
+    size() {
+      // @ts-ignore - types are not yet supported by vuetify
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+        case "sm":
+          return 'small'
+        default:
+          return 'large'
+      }
+    },
     entries(): Entry[] { return this.$store.state.entries.searchResults },
     progress(): number { return Math.floor((this.steps/11) * 100) },
     progressMessage(): string {
