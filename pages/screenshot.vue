@@ -11,6 +11,11 @@
           v-progress-circular.mb-2(:value="progress")
           div {{ progressMessage }}
       div(v-else)
+        v-row(justify="center" no-gutters)
+          v-btn.mb-5(
+            @click="drop"
+            color="primary"
+          ) Загрузить другое изображение
         div(v-if="$auth.loggedIn")
           v-row(justify="center")
             v-col(
@@ -87,7 +92,7 @@ export default Vue.extend({
         restrictions: {
           allowedFileTypes: ['image/*']
         },// @ts-ignore
-        onBeforeFileAdded: (file: any) => {
+        onBeforeFileAdded: file => {
           this.steps = 1
           this.error = ''
 
@@ -298,6 +303,19 @@ export default Vue.extend({
         await this.$store.dispatch('bulkSearch', this.names)
         this.steps++
       }
+    },
+    /**
+     * Reset form
+     */
+    drop() {
+      this.steps = 0
+      this.names = []
+      this.error = ''
+
+      this.uppy.getFiles().forEach((e: any) => {
+        console.log('STUPED: ', e.id)
+        this.uppy.removeFile(e.id)
+      })
     }
   },
   mounted() {
