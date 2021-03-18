@@ -39,7 +39,7 @@ export default {
   plugins: [],
   axios: {
     baseURL: process.env.NODE_ENV === 'development' || !process.env.BASE_URL
-      ? `http://localhost:3000/api`
+      ? `http://${process.env.HOST || 'localhost'}:3000/api`
       : process.env.BASE_URL
   },
   auth: {
