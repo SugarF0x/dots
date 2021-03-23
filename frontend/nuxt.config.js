@@ -4,12 +4,11 @@ import colors from 'vuetify/es5/util/colors'
  * .env definitions in use
  *
  * BASE_URL - define base path to prepend to Axios calls [default: http://localhost:1337]
- * AUTH_DISCORD_URL - Discord auth URL used in OAuth2
  */
 
 export default {
   ssr: false,
-  target: 'server',
+  target: 'static',
   head: {
     titleTemplate: 'DotS',
     title: 'DotS',
