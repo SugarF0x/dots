@@ -43,7 +43,7 @@ export const mutations: MutationTree<RootState> = {
 }
 
 // noinspection JSUnusedGlobalSymbols
-export const actions: ActionTree<RootState, RootState> = {
+export const actions: ActionTree<RootState, RootState> = { // TODO: refactor repeating code segments (since Strapi introduction, a lot can be recycled)
   async getLastFive({ commit }) {
     commit('START_LOADING_PROCESS')
     await this.$axios.$get('/posts', { params: { _sort: 'createdAt:DESC', _limit: 5 } })
@@ -55,7 +55,7 @@ export const actions: ActionTree<RootState, RootState> = {
   },
   async search({ state, commit }) {
     commit('START_LOADING_PROCESS')
-    await this.$axios.$get(`/posts`, { params: { name_contains: state.query } })
+    await this.$axios.$get(`/posts`, { params: { name_contains: state.query, _sort: 'createdAt:DESC' } })
       .then(response => {
         commit('SET_SEARCH_RESULTS', response)
         commit('FINISH_LOADING_PROCESS')
