@@ -30,7 +30,7 @@
       "@nuxt/types",
       "@nuxtjs/vuetify",
       "@nuxtjs/axios",
-      "@types/nuxtjs__auth",
+      "@nuxtjs/auth-next",
       "vue-konva",
     ]
   },

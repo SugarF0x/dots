@@ -32,7 +32,7 @@ export default {
   ],
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/auth'
+    '@nuxtjs/auth-next'
   ],
   plugins: [],
   axios: {
@@ -53,12 +53,15 @@ export default {
     },
     strategies: {
       discord: {
-        _scheme: 'oauth2',
+        scheme: 'oauth2',
         endpoints: {
-          authorization: process.env.AUTH_URL_DISCORD || '/error?message=Discord%20URL%20missing&title=Auth%20disabled&',
+          authorization: process.env.BASE_URL
+            ?  process.env.BASE_URL+ '/connect/discord'
+            : 'http://localhost:1337/connect/discord',
           token: 'https://discord.com/api/oauth2/token',
-          // userInfo: 'https://www.googleapis.com/oauth2/v3/userinfo',
-          logout: 'https://discord.com/api/oauth2/token/revoke'
+          userInfo: process.env.BASE_URL
+            ? process.env.BASE_URL+ '/users/me'
+            : undefined
         },
         token: {
           property: 'jwt',
