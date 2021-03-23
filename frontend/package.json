@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nuxt-ts",
     "build": "nuxt-ts build",
-    "start": "title D.Beels of the Storm && nuxt-ts start",
+    "start": "title DotS Frontend && nuxt-ts start",
     "generate": "nuxt-ts generate",
     "test": "jest"
   },
