@@ -32,45 +32,13 @@ export default {
     '@nuxtjs/vuetify',
   ],
   modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/auth',
-    '~/modules/api'
+    '@nuxtjs/axios'
   ],
   plugins: [],
   axios: {
     baseURL: process.env.NODE_ENV === 'development' || !process.env.BASE_URL
       ? `http://${process.env.HOST || 'localhost'}:3000/api`
       : process.env.BASE_URL
-  },
-  auth: {
-    cookie: {
-      options: {
-        expires: 365
-      }
-    },
-    resetOnError: true,
-    redirect: {
-      login: '/login',
-      logout: false
-    },
-    strategies: {
-      local: {
-        endpoints: {
-          login: {
-            url: '/auth/login',
-            method: 'post',
-            propertyName: 'token'
-          },
-          logout: false,
-          user: {
-            url: '/auth/me',
-            method: 'GET',
-            propertyName: 'token'
-          }
-        },
-        tokenRequired: true
-      },
-    },
   },
   vuetify: {
     treeShake: {

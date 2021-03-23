@@ -11,16 +11,12 @@
   },
   "dependencies": {
     "@nuxt/typescript-runtime": "^2.0.0",
-    "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.12.2",
     "@uppy/core": "^1.16.1",
     "@uppy/locales": "^1.17.2",
     "@uppy/vue": "^0.1.6",
-    "cookie-parser": "^1.4.5",
     "core-js": "^3.6.5",
-    "jsonwebtoken": "^8.5.1",
     "konva": "^7.2.4",
-    "mongoose": "^5.11.15",
     "nuxt": "^2.14.6",
     "tesseract.js": "^2.1.4"
   },
