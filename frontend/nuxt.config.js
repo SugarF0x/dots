@@ -3,7 +3,7 @@ import colors from 'vuetify/es5/util/colors'
 /**
  * .env definitions in use
  *
- * BASE_URL - define base path to prepend to Axios calls [default: http://localhost:3000/api]
+ * BASE_URL - define base path to prepend to Axios calls [default: http://localhost:1337]
  * PASSWORD - pass to get editor access [default: 1234]
  * SECRET - JWT secret [default: 4321]
  */
@@ -37,7 +37,7 @@ export default {
   plugins: [],
   axios: {
     baseURL: process.env.NODE_ENV === 'development' || !process.env.BASE_URL
-      ? `http://${process.env.HOST || 'localhost'}:3000/api`
+      ? `http://${process.env.HOST || 'localhost'}:1337`
       : process.env.BASE_URL
   },
   vuetify: {
