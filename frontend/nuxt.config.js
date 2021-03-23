@@ -61,7 +61,7 @@ export default {
           token: 'https://discord.com/api/oauth2/token',
           userInfo: process.env.BASE_URL
             ? process.env.BASE_URL+ '/users/me'
-            : undefined
+            : 'http://localhost:1337/users/me'
         },
         token: {
           property: 'jwt',

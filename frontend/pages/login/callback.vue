@@ -9,7 +9,7 @@
       )
         v-card.text-center.entry
           v-card-title.justify-center {{ isSuccessful ? 'Вход успешно совершён' : 'Ошибка' }}
-          v-card-text.headline {{ isSuccessful ? $auth.user.username : 'Что-то пошло не так' }}
+          v-card-text.headline {{ isSuccessful ? username : 'Что-то пошло не так' }}
           v-card-actions
             v-btn(
               block
@@ -29,7 +29,8 @@ export default Vue.extend({
     }
   },
   computed: {
-    isSuccessful(): boolean { return this.query.access_token && this.query.refresh_token }
+    isSuccessful(): boolean { return this.query.access_token && this.query.refresh_token },
+    username() { return this.$auth.user?.username }
   },
   async mounted() {
     if (this.isSuccessful) {
