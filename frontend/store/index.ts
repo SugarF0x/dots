@@ -46,50 +46,47 @@ export const mutations: MutationTree<RootState> = {
 export const actions: ActionTree<RootState, RootState> = {
   async getLastFive({ commit }) {
     commit('START_LOADING_PROCESS')
-    const response = await this.$axios.$get('/db/getLastFive') as { result: number, message: Entry[] }
-
-    if (response.result) {
-      commit('SET_LAST_FIVE_ENTRIES', response.message)
-    }
-
-    commit('FINISH_LOADING_PROCESS')
+    await this.$axios.$get('/posts', { params: { _sort: 'createdAt:DESC', _limit: 5 } })
+      .then(response => {
+        commit('SET_LAST_FIVE_ENTRIES', response)
+        commit('FINISH_LOADING_PROCESS')
+      })
+      .catch(e => console.error(e))
   },
   async search({ state, commit }) {
     commit('START_LOADING_PROCESS')
-    const response = await this.$axios.$get('/db/search', { params: { name: state.query } }) as { result: number, message: Entry[] }
-    if (response.result) {
-      commit('SET_SEARCH_RESULTS', response.message)
-    }
-
-    commit('FINISH_LOADING_PROCESS')
+    await this.$axios.$get(`/posts`, { params: { name_contains: state.query } })
+      .then(response => {
+        commit('SET_SEARCH_RESULTS', response)
+        commit('FINISH_LOADING_PROCESS')
+      })
+      .catch(e => console.error(e))
   },
-  async bulkSearch({ commit }, payload) {
+  async bulkSearch({ commit }, payload) { // TODO: figure out what to do about bulk search
     commit('START_LOADING_PROCESS')
-    const response = await this.$axios.$get('/db/bulkSearch', { params: { names: payload } }) as { result: number, message: Entry[] }
-    if (response.result) {
-      commit('SET_SEARCH_RESULTS', response.message)
-    }
-
-    commit('FINISH_LOADING_PROCESS')
+    await this.$axios.$get('/db/bulkSearch', { params: { names: payload } })
+      .then(response => {
+        commit('SET_SEARCH_RESULTS', response)
+        commit('FINISH_LOADING_PROCESS')
+      })
+      .catch(e => console.error(e))
   },
   async getTotalEntries({ commit }) {
     commit('START_LOADING_PROCESS')
-    const response = await this.$axios.$get('/db/getCount') as { result: number, message: number }
-
-    if (response.result) {
-      commit('SET_TOTAL_ENTRIES', response.message)
-    }
-
-    commit('FINISH_LOADING_PROCESS')
+    await this.$axios.$get('/posts/count')
+      .then(response => {
+        commit('SET_TOTAL_ENTRIES', response)
+        commit('FINISH_LOADING_PROCESS')
+      })
+      .catch(e => console.error(e))
   },
   async getAll({ commit }) {
     commit('START_LOADING_PROCESS')
-    const response = await this.$axios.$get('/db/getAll') as { result: number, message: Entry[] }
-
-    if (response.result) {
-      commit('SET_SEARCH_RESULTS', response.message)
-    }
-
-    commit('FINISH_LOADING_PROCESS')
+    await this.$axios.$get('/posts')
+      .then(response => {
+        commit('SET_SEARCH_RESULTS', response)
+        commit('FINISH_LOADING_PROCESS')
+      })
+      .catch(e => console.error(e))
   }
 }
