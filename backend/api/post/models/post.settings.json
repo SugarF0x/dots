@@ -122,14 +122,6 @@
       "min": 0,
       "default": 0,
       "required": false
-    },
-    "date": {
-      "type": "datetime",
-      "required": true,
-      "unique": false
-    },
-    "author": {
-      "type": "string"
     }
   }
 }
