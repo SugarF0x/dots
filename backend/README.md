@@ -1,3 +1,3 @@
-# Strapi application
+# DotS Backend
 
-A quick description of your strapi application
+D.Beels of the Storm backend
