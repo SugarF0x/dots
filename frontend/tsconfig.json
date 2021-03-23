@@ -32,7 +32,6 @@
       "@nuxtjs/axios",
       "@types/nuxtjs__auth",
       "vue-konva",
-      "mongoose"
     ]
   },
   "exclude": [

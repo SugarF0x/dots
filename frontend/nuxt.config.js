@@ -4,8 +4,7 @@ import colors from 'vuetify/es5/util/colors'
  * .env definitions in use
  *
  * BASE_URL - define base path to prepend to Axios calls [default: http://localhost:1337]
- * PASSWORD - pass to get editor access [default: 1234]
- * SECRET - JWT secret [default: 4321]
+ * AUTH_DISCORD_URL - Discord auth URL used in OAuth2
  */
 
 export default {
@@ -32,13 +31,47 @@ export default {
     '@nuxtjs/vuetify',
   ],
   modules: [
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/auth'
   ],
   plugins: [],
   axios: {
     baseURL: process.env.NODE_ENV === 'development' || !process.env.BASE_URL
-      ? `http://${process.env.HOST || 'localhost'}:1337`
+      ? `http://localhost:1337`
       : process.env.BASE_URL
+  },
+  auth: {
+    cookie: {
+      options: {
+        expires: 365
+      }
+    },
+    resetOnError: true,
+    redirect: {
+      login: '/login',
+      logout: false
+    },
+    strategies: {
+      discord: {
+        _scheme: 'oauth2',
+        endpoints: {
+          authorization: process.env.AUTH_URL_DISCORD || '/error?message=Discord%20URL%20missing&title=Auth%20disabled&',
+          token: 'https://discord.com/api/oauth2/token',
+          // userInfo: 'https://www.googleapis.com/oauth2/v3/userinfo',
+          logout: 'https://discord.com/api/oauth2/token/revoke'
+        },
+        token: {
+          property: 'jwt',
+          type: 'Bearer',
+          maxAge: 365 * 24 * 60 * 60
+        },
+        responseType: 'token',
+        redirectUri: `${process.env.BASE_URL || 'http://localhost:1337'}/connect/discord/callback`,
+        logoutRedirectUri: '/',
+        clientId: '823885094250479666',
+        scope: ['identify']
+      },
+    }
   },
   vuetify: {
     treeShake: {
