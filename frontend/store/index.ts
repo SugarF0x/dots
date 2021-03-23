@@ -1,5 +1,6 @@
 import { MutationTree, GetterTree, ActionTree } from 'vuex'
 import { Entry } from '~/assets/consts'
+import qs from 'qs'
 
 export const state = () => ({
   query: '',
@@ -62,9 +63,13 @@ export const actions: ActionTree<RootState, RootState> = { // TODO: refactor rep
       })
       .catch(e => console.error(e))
   },
-  async bulkSearch({ commit }, payload) { // TODO: figure out what to do about bulk search
+  async bulkSearch({ commit }, payload) {
+
+    let query = ''
+    payload.forEach((name: string, index: number) => query += `${index>0?'&':''}name=${name}`)
+
     commit('START_LOADING_PROCESS')
-    await this.$axios.$get('/db/bulkSearch', { params: { names: payload } })
+    await this.$axios.$get(`/posts/bulk?${query}`)
       .then(response => {
         commit('SET_SEARCH_RESULTS', response)
         commit('FINISH_LOADING_PROCESS')

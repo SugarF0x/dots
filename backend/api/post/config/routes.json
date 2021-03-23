@@ -18,6 +18,14 @@
     },
     {
       "method": "GET",
+      "path": "/posts/bulk",
+      "handler": "post.bulk",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
       "path": "/posts/:id",
       "handler": "post.findOne",
       "config": {
