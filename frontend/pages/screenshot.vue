@@ -313,7 +313,6 @@ export default Vue.extend({
       this.error = ''
 
       this.uppy.getFiles().forEach((e: any) => {
-        console.log('STUPED: ', e.id)
         this.uppy.removeFile(e.id)
       })
     }
