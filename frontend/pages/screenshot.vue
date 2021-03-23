@@ -33,7 +33,7 @@
           v-divider.my-5
         RefinedEntry.mb-5(
           v-for="entry in entries"
-          :key="entry.name + entry.date"
+          :key="entry.id"
           :entry="entry"
         )
     div(v-else)
