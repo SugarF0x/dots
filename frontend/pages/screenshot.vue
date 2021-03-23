@@ -16,7 +16,7 @@
             @click="drop"
             color="primary"
           ) Загрузить другое изображение
-        div(v-if="$auth.loggedIn")
+        div(v-if="$auth.loggedIn && $auth.user.role.type === 'authenticated'")
           v-row(justify="center")
             v-col(
               cols="12"

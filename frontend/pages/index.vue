@@ -9,7 +9,7 @@
       @click:append="$router.push('/screenshot')"
     )
     RefinedEntry.mb-5(
-      v-if="$auth.loggedIn && query.length"
+      v-if="canEdit"
       :key="query"
       :entry=`{
         name: query,
@@ -46,7 +46,8 @@ export default Vue.extend({
     entries(): Entry[] { return this.$store.state.entries.searchResults },
     lastFive(): Entry[] { return this.$store.state.entries.lastFive },
     isLoading(): boolean { return this.$store.getters.isLoading },
-    query(): string { return this.$store.state.query }
+    query(): string { return this.$store.state.query }, // @ts-ignore
+    canEdit(): boolean { return this.$auth.loggedIn && this.$auth.user?.role.type === 'authenticated' && this.query.length > 0 }
   },
   methods: {
     handleInput() {
