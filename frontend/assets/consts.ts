@@ -11,9 +11,14 @@ export const HERO_NAMES = [
   'valla','varian','vikings','whitemane','xul','yrel','zagara','zarya','zeratul','zuljin'
 ] as const
 
-export interface Entry {
-  date: Date
-  name: string
+export interface Entry extends EntryDraft {
+  createdAt: Date
+  updatedAt: Date
+  id: "601da2d306944e4cb4f646c9"
+}
+
+export interface EntryDraft {
+  name: string,
   hero: typeof HERO_NAMES[number]
   rating: number
   comment: string

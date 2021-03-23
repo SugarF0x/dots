@@ -27,7 +27,7 @@
           :edit="edit && !isSubmitted"
           @selected="selectRating"
         )
-        div.text-center.mt-2(v-if="!edit") {{ data.date.toLocaleDateString() }}
+        div.text-center.mt-2(v-if="!edit") {{ data.createdAt.toLocaleDateString() }}
       v-col.mt-3.comment.rounded-lg(cols="12")
         div(v-if="!edit || isSubmitted") {{ data.comment }}
         v-textarea.pt-0.mt-0(
@@ -81,7 +81,7 @@
               hide-details
               :reverse="side === 'right'"
             )
-          div.text-center.ml-5.flex-grow-0.my-auto.date(v-if="!edit") {{ new Date(data.date).toLocaleDateString() }}
+          div.text-center.ml-5.flex-grow-0.my-auto.date(v-if="!edit") {{ new Date(data.createdAt).toLocaleDateString() }}
         div.comment.rounded-lg
           div(
             v-if="!edit || isSubmitted"
@@ -119,15 +119,14 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Entry, HERO_NAMES } from "~/assets/consts"
+import { Entry, EntryDraft, HERO_NAMES } from "~/assets/consts"
 
 const DEFAULT_DATA = {
-  date: new Date(),
   name: '',
   hero: 'random',
   rating: 0,
   comment: ''
-} as Entry
+} as EntryDraft
 
 export default Vue.extend({
   name: "RefinedEntry",
@@ -143,7 +142,7 @@ export default Vue.extend({
     entry: { // Initial Entry data
       type: Object as PropType<Entry>,
       default: (): Entry => {
-        return DEFAULT_DATA
+        return DEFAULT_DATA as Entry
       }
     },
     match: { // Match element if one is found
@@ -186,9 +185,9 @@ export default Vue.extend({
     async submit() {
       this.isLoading = true
 
-      await this.$axios.post('/db/addEntry', this.data)
+      await this.$axios.post('/posts', this.data)
         .then(() => {
-          this.$store.commit('ADD_NEW_ENTRY', Object.assign({}, this.data, { date: new Date() }))
+          this.$store.commit('ADD_NEW_ENTRY', this.data)
           if (this.remember) this.isSubmitted = true
           else this.assignData()
         })
