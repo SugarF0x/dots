@@ -87,7 +87,7 @@ export const actions: ActionTree<RootState, RootState> = { // TODO: refactor rep
   },
   async getAll({ commit }) {
     commit('START_LOADING_PROCESS')
-    await this.$axios.$get('/posts')
+    await this.$axios.$get('/posts?_sort=createdAt:DESC&_limit=0')
       .then(response => {
         commit('SET_SEARCH_RESULTS', response)
         commit('FINISH_LOADING_PROCESS')
