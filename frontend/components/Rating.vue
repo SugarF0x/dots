@@ -2,6 +2,7 @@
   div.pt-3
     div(v-if="!edit").text-center
       v-icon(
+        :style="{ color }"
         v-for="n in 5"
         :key="'rate-'+n"
       ) {{ getStar(n) }}
@@ -14,7 +15,7 @@
         max-width="25"
         @click="selectRating(n)"
       )
-        v-icon {{ getStar(n) }}
+        v-icon(:style="{ color }") {{ getStar(n) }}
 </template>
 
 <script lang="ts">
@@ -35,6 +36,22 @@ export default Vue.extend({
   data() {
     return {
       selectedRating: this.rating
+    }
+  },
+  computed: {
+    color(): string {
+      const colors = [
+        'red', '#740001', '#9C0009',
+        '#b87333', 'silver', 'gold'
+      ]
+
+      // These colors are based off of HotS Ranks
+      // const colors = [
+      //   '#C17C62', '#B2B8CE', '#FAC627',
+      //   '#C1A0FF', '#01BDEE', '#D2FCFF'
+      // ]
+
+      return colors[this.selectedRating]
     }
   },
   watch: {
