@@ -3,7 +3,7 @@ import colors from 'vuetify/es5/util/colors'
 /**
  * .env definitions in use
  *
- * BASE_URL - define base path to prepend to Axios calls [default: http://localhost:1337]
+ * BASE_URL - define base path to prepend to Axios calls [default: http://localhost:3000]
  */
 
 export default {
@@ -15,7 +15,13 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'База данных тупорезок хоти' }
+      { hid: 'description', name: 'description', content: 'База данных тупорезок хоти' },
+      { hid: 'og:title', name: 'og:title', content: 'База данных тупорезок хоти' },
+      { hid: 'og:type', name: 'og:type', content: 'website' },
+      { hid: 'og:url', name: 'og:type', content: process.env.BASE_URL || `http://localhost:3000` },
+      { hid: 'og:image', name: 'og:image', content: `${process.env.BASE_URL || `http://localhost:3000`}/card.jpg` },
+      { hid: 'og:image:width', name: 'og:image:width', content: '1600' },
+      { hid: 'og:image:height', name: 'og:image:height', content: '800' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }
