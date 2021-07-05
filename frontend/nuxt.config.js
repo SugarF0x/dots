@@ -4,6 +4,7 @@ import colors from 'vuetify/es5/util/colors'
  * .env definitions in use
  *
  * BASE_URL - define base path to prepend to Axios calls [default: http://localhost:3000]
+ * NGINX_HOST - full domain name
  */
 
 export default {
@@ -18,8 +19,8 @@ export default {
       { hid: 'description', name: 'description', content: 'База данных тупорезок хоти' },
       { hid: 'og:title', name: 'og:title', content: 'База данных тупорезок хоти' },
       { hid: 'og:type', name: 'og:type', content: 'website' },
-      { hid: 'og:url', name: 'og:type', content: process.env.BASE_URL || `http://localhost:3000` },
-      { hid: 'og:image', name: 'og:image', content: `${process.env.BASE_URL || `http://localhost:3000`}/card.jpg` },
+      { hid: 'og:url', name: 'og:type', content: process.env.NGINX_HOST || `http://localhost:3000` },
+      { hid: 'og:image', name: 'og:image', content: `${process.env.NGINX_HOST || `http://localhost:3000`}/card.jpg` },
       { hid: 'og:image:width', name: 'og:image:width', content: '1600' },
       { hid: 'og:image:height', name: 'og:image:height', content: '800' }
     ],
