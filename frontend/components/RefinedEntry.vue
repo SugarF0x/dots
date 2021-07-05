@@ -27,7 +27,7 @@
           :edit="edit && !isSubmitted"
           @selected="selectRating"
         )
-        div.text-center.mt-2(v-if="!edit") {{ data.createdAt.toLocaleDateString() }}
+        div.text-center.mt-2(v-if="!edit") {{ new Date(data.createdAt).toLocaleDateString() }}
       v-col.mt-3.comment.rounded-lg(cols="12")
         div(v-if="!edit || isSubmitted") {{ data.comment }}
         v-textarea.pt-0.mt-0(
